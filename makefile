@@ -3,7 +3,7 @@ buildDir=build
 srcDir=src
 libDir=lib
 lib=lib/javafx-sdk-18/lib
-test1=test1
+app = Starter
 
 modules = javafx.controls,javafx.fxml
 
@@ -17,7 +17,14 @@ clean:
 test1:
 	bash $(libDir)/downloader.sh
 	mv javafx-sdk-18 $(libDir)
-	javac -cp $(srcDir) --module-path $(lib) --add-modules $(modules) -d $(buildDir) $(srcDir)/$(test1).java
-	java -ea -cp $(buildDir) --module-path $(lib) --add-modules $(modules) $(test1)
+	javac -cp $(srcDir) --module-path $(lib) --add-modules $(modules) -d $(buildDir) $(srcDir)/$(app).java
+	java -ea -cp $(buildDir) --module-path $(lib) --add-modules $(modules) $(app)
+
+r:
+	rm -rf $(buildDir)
+	mkdir $(buildDir)
+	javac -cp $(srcDir) --module-path $(lib) --add-modules $(modules) -d $(buildDir) $(srcDir)/$(app).java
+	java -ea -cp $(buildDir) --module-path $(lib) --add-modules $(modules) $(app)
+
 
 
