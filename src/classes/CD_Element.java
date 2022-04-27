@@ -1,6 +1,6 @@
-
 package classes;
 
+import support.AccesT;
 import java.util.*;
 
 public class CD_Element{
@@ -9,6 +9,7 @@ public class CD_Element{
     private String type; 
     private AccesT acces;
     private boolean func = false;
+    private String returnT="";
 
     public CD_Element(String name){
         this.name=name;
@@ -24,13 +25,21 @@ public class CD_Element{
         return this.type;
     }
 
+    public String GetReturnT(){
+        return this.returnT;
+    }
+
+    public void SetReturnT(String newT){
+        this.returnT=newT;
+    }
+
     public String GetAccess(){
         if(this.acces==AccesT.PUBLIC)
-            return "0";
+            return "public";
         else if(this.acces == AccesT.PROTECTED)
-            return "1";
+            return "protected";
         else
-            return "2";
+            return "private";
     }
 
     public void SetType(AccesT x){
@@ -69,13 +78,11 @@ public class CD_Element{
     public String ToString(){
         if(!this.func)
             return this.RetAcces()+" "+this.name+" : "+this.type;
-        else
-            return this.RetAcces()+" "+this.name+"("+this.type+")";
+        else{
+            if(returnT=="")
+                return this.RetAcces()+" "+this.name+"("+this.type+")";
+            else
+                return this.RetAcces()+" "+this.name+"("+this.type+") : "+this.returnT;
+        }
     }
-}
-
-enum AccesT{
-    PUBLIC,
-    PRIVATE,
-    PROTECTED
 }

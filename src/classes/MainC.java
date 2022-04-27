@@ -2,6 +2,8 @@
 package classes;
 
 //My improts
+import support.*;
+import ui.*;
 import classes.*;
 //FX imports
 //Roots
@@ -33,7 +35,7 @@ import javafx.scene.text.FontWeight;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import java.util.function.Function;
 
 import javax.crypto.AEADBadTagException;
 import javax.swing.ButtonModel;
@@ -47,12 +49,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 
 import java.util.*;
-
+import java.awt.Dimension;
 import java.io.File;
 
 public class MainC extends Application implements EventHandler<ActionEvent>{
 
-    FileHandler fh;
+    public FileHandler fh;
     ClassDiagram curClass;
 
     Line drawer;
@@ -68,13 +70,17 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
     List<Button> renameClasButtons;
     List<Button> deleteClassButtons;
 
+    List<VBox> newClassSizeData;
+
     Button b_AddClass;
     Button b_Save;
 
     ArrayList<ArrayList<Integer>> mapper;
 
-
+    int dimX;
+    int dimY;
     boolean loaded=false;
+
     public void FireStarter(String[] args) {
         launch(args);
     }
@@ -91,6 +97,23 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
                 this.mapper.get(i).set(j, h);
             }
         }
+    }
+
+    private void FillAll(){
+        this.LoadMap(this.dimX, this.dimY);
+        int i=0;
+        for (Class c : this.curClass.GetClasses()){
+            int bgnX = (int)Math.round(c.GetPosX()+20);
+            int bgnY = (int)Math.round(c.GetPosY()+40);
+            int endX = bgnX + (int)Math.round(this.newClassSizeData.get(i).getWidth());
+            int endY = bgnY + (int)Math.round(this.newClassSizeData.get(i).getHeight());
+            this.FillMap(bgnX, bgnY, endX, endY, i+1);
+            i++;
+        }
+    }
+
+    public Integer GetMap(double posX,double posY){
+        return this.mapper.get((int)Math.round(posX/5)).get((int)Math.round(posY/5));
     }
 
     /*Small menu functions*/
@@ -138,11 +161,11 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         return nScene;
     }
 
-    private Scene LoadStage(){
-        int dimX = 1000;
-        int dimY = 800;
+    private Pane LoadStage(){
+        this.dimX = 1000;
+        this.dimY = 800;
 
-        LoadMap(dimX,dimY);
+        this.newClassSizeData = new ArrayList<VBox>();
 
 
         Pane layout = new Pane();
@@ -161,12 +184,14 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         layout.getChildren().add(buttonen);
 
         int i = 0;
-        int j = 0;
         Line drawer = new Line();
         for (Class curClass : this.curClass.GetClasses()){
             ClassController ctrl = new ClassController(curClass,this);
             VBox newClass = ctrl.GetDrawn();
             
+            newClass.setPrefWidth(curClass.GetGraphicWidth());
+            newClass.setPrefHeight(curClass.GetGraphicHeigth());
+
             HBox newButts = new HBox();
             Button move = new Button("Move");
             Button addBind = new Button("Add Bind");
@@ -185,15 +210,17 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
                 @Override public void handle(MouseEvent mouseEvent) {
                     drawer.setEndX(mouseEvent.getSceneX());
                     drawer.setEndY(mouseEvent.getSceneY());
-                    //ADD TARGET HERE
                 }
             });
 
-            
-
             addBind.setOnMouseReleased(new EventHandler<MouseEvent>(){
                 @Override public void handle(MouseEvent mouseEvent) {
+                    if(GetMap(mouseEvent.getSceneX(),mouseEvent.getSceneY())>0){
+                        MainC.this.curClass.Bind_Add("new_bind",curClass,MainC.this.curClass.GetClasses().get(GetMap(mouseEvent.getSceneX(),mouseEvent.getSceneY())-1));
+                        System.out.println("hit");
+                    }
                     layout.getChildren().remove(drawer);
+                    MainC.this.Refresh();
                 }
             });
             
@@ -201,6 +228,7 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
             newButts.getChildren().addAll(move,addBind);
 
             final Delta dragDelta = new Delta();
+
             move.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override public void handle(MouseEvent mouseEvent) {
                   // record a delta distance for the drag and drop operation.
@@ -221,26 +249,120 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
                     curClass.SetPos((int)Math.round(newClass.getLayoutX())-20, (int)Math.round(newClass.getLayoutY())-40);
                     newClass.setLayoutX(curClass.GetPosX()+20);
                     newClass.setLayoutY(curClass.GetPosY()+40);
+                    MainC.this.Refresh();
                 }
             });
 
+
             newClass.setLayoutX(curClass.GetPosX()+20);
             newClass.setLayoutY(curClass.GetPosY()+40);
-            this.FillMap((int)Math.round( newClass.getLayoutX()),(int)Math.round(  newClass.getLayoutY()),(int)Math.round(  newClass.getLayoutX() + 30),(int)Math.round(  newClass.getLayoutX() + 60),i+1);
 
             newClass.getChildren().add(newButts);
             layout.getChildren().add(newClass);
+            i++;
+
+            this.newClassSizeData.add(newClass);
         }
         
-        Scene newScene = new Scene(layout,dimX,dimY);
-        
-        return newScene;
+        return layout;
     }
 
     public void Refresh(){
-        Scene newscene = this.LoadStage();
-        this.primaryStage.setScene(newscene);
+        Pane layout = this.LoadStage();
+        Scene newScene = new Scene(layout,this.dimX,this.dimY);
+        this.primaryStage.setScene(newScene);
+        this.FillAll();
+        Group addG = this.RefreshLines();
+        layout.getChildren().add(addG);
         this.primaryStage.show();
+    }
+
+    public void SmallRefresh(){
+        Scene newScene = this.UpdateFList();
+        this.primaryStage.setScene(newScene);
+        this.primaryStage.show();
+    }
+
+    private Side Oppose(Side x){
+        if(x == Side.LEFT)
+        return Side.RIGHT;
+        else if(x==Side.RIGHT)
+        return Side.LEFT;
+        else if(x==Side.BOTTOM)
+        return Side.TOP;
+        else
+        return Side.BOTTOM;
+    }
+
+    private Dimension GetConPoint(Side x, VBox conPoint){
+        Dimension pair = new Dimension();
+        if(x==Side.TOP){
+            pair.setSize(conPoint.getLayoutX(),conPoint.getLayoutY());
+        }
+        else if(x==Side.BOTTOM){
+            pair.setSize(conPoint.getLayoutX(),conPoint.getLayoutY()+conPoint.getHeight());
+        }
+        else if(x==Side.LEFT){
+            pair.setSize(conPoint.getLayoutX(),conPoint.getLayoutY());
+        }
+        else{
+            pair.setSize(conPoint.getLayoutX()+conPoint.getWidth(),conPoint.getLayoutY());
+        }
+        return pair;
+    }
+
+
+    public Group RefreshLines(){
+        Group newGr = new Group();
+
+        for(Bind b : this.curClass.GetBinds()){
+            Class c1 = b.GetClasses().get(0);
+            Class c2 = b.GetClasses().get(1);
+
+            
+            int c1_num = c1.GetId();
+            int c2_num = c2.GetId();
+
+            int c1_x = c1.GetPosX();
+            int c1_y = c1.GetPosY();
+            int c2_x = c2.GetPosX();
+            int c2_y = c2.GetPosY();
+
+            int len_x;
+            int len_y;
+            Side c1_p1;
+            Side c1_p2;
+            Side f;
+
+            if(c1_x < c2_x){
+                len_x = c2_x - c1_x;
+                c1_p1 = Side.RIGHT;
+            }else{
+                len_x = c1_x - c2_x;
+                c1_p1 = Side.LEFT;
+            }
+            if(c1_y < c2_y){
+                len_y = c2_y - c1_y;
+                c1_p2 = Side.TOP;
+            }else{
+                len_y = c1_y - c2_y;
+                c1_p2=Side.BOTTOM;
+            }
+
+            if(len_x > len_y)
+                f = c1_p1;
+            else 
+                f=c1_p2;
+
+            Dimension fDim = this.GetConPoint(f, this.newClassSizeData.get(c1_num));
+            Dimension tDim = this.GetConPoint(this.Oppose(f), this.newClassSizeData.get(c2_num));
+            BindController ctrl = new BindController(fDim.getWidth(), fDim.getHeight(), tDim.getWidth(), tDim.getHeight(),f, b,this,this.curClass);
+            Group newLine =  ctrl.GetDrawn();
+
+            newGr.getChildren().add(newLine);
+        }
+
+        return newGr;
     }
 
     @Override
@@ -263,9 +385,7 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
 
             if(event.getSource() == this.addClassDiagram){
                 this.fh.New(this.pathway);
-                Scene newScene = this.UpdateFList();
-                this.primaryStage.setScene(newScene);
-                this.primaryStage.show();
+                this.SmallRefresh();
             }
             
             
@@ -275,28 +395,23 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
                 if(event.getSource()==this.loadClassButtons.get(i)){
                     this.loaded=true;
                     this.curClass = this.fh.Load(this.pathway, file);
-                    this.primaryStage.setScene(this.LoadStage());
-                    this.primaryStage.show();
+                    this.Refresh();
                     break;
                 }
                 else if(event.getSource()==this.renameClasButtons.get(i)){
-                    this.fh.Rename_F(this.pathway,file, pathway+"/"+file);
-                    Scene newScene = this.UpdateFList();
-                    this.primaryStage.setScene(newScene);
-                    this.primaryStage.show();
+                    vPopper newPop = new vPopper(this,this.pathway,file);
+                    
                     break;
                 }
                 else if(event.getSource()==this.deleteClassButtons.get(i)){
                     this.fh.Delete_F(this.pathway,file);
-                    Scene newScene = this.UpdateFList();
-                    this.primaryStage.setScene(newScene);
-                    this.primaryStage.show();
+                    this.SmallRefresh();
                     break;
                 }
             }
         }else{
             if(event.getSource()==this.b_AddClass){
-                this.curClass.Class_Add("new_clss");
+                Class newC= this.curClass.Class_Add("new_clss");
                 this.Refresh();
                 return;
             }
@@ -308,5 +423,3 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
     }
     
 }
-
-class Delta { double x, y; }

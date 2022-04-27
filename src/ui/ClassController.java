@@ -1,5 +1,5 @@
 
-package classes;
+package ui;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -19,8 +19,10 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 
+import classes.CD_Element;
 import classes.Class;
 import classes.MainC;
+import support.Delta;
 
 public class ClassController implements EventHandler<ActionEvent>{
 
@@ -31,8 +33,6 @@ public class ClassController implements EventHandler<ActionEvent>{
     public List<Button> removeArgs;
     public List<Button> removeFunc;
 
-    public List<String> args;
-    public List<String> funcs;
     public Button newArg;
     public Button newFunc;
 
@@ -53,8 +53,6 @@ public class ClassController implements EventHandler<ActionEvent>{
 
     private VBox DrawClass(){
 
-        this.args = new ArrayList<String>();
-        this.funcs = new ArrayList<String>();
         this.edditArgButts = new ArrayList<Button>();
         this.edditFuncButts = new ArrayList<Button>();
         this.removeArgs = new ArrayList<Button>();
@@ -76,7 +74,6 @@ public class ClassController implements EventHandler<ActionEvent>{
         newClass.getChildren().add(offset);
         int i=0;
         for(CD_Element elem : curClass.GetElements()){
-            this.args.add(elem.GetName());
             HBox listElem = new HBox();
 
             Button newEditButt = new Button(elem.ToString());
@@ -97,7 +94,6 @@ public class ClassController implements EventHandler<ActionEvent>{
         newClass.getChildren().add(offset2);
         i=0;
         for(CD_Element elem : curClass.GetFunca()){
-            this.funcs.add(elem.GetName());
             HBox listElem = new HBox();
             
             Button newEditButt = new Button(elem.ToString());
@@ -125,9 +121,9 @@ public class ClassController implements EventHandler<ActionEvent>{
         butts.getChildren().add(addFunc);
         newClass.getChildren().add(butts);
 
-        newClass.setStyle("-fx-padding: 10;" + "-fx-border-style: solid inside;"
-                            + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
-                            + "-fx-border-radius: 5;" + "-fx-border-color: blue;");
+        newClass.setStyle("-fx-border-style: solid inside;"
+                            + "-fx-border-width: 2;"
+                            + "-fx-border-color: blue;");
 
         return newClass;
     }
@@ -154,7 +150,8 @@ public class ClassController implements EventHandler<ActionEvent>{
         int i = 0;
         for(Button butt : this.edditArgButts){
             if(event.getSource()==butt){
-                ElemPopper pop = new ElemPopper(this.main, this,this.curC, this.curC.Get_Element(this.args.get(i)));
+                CD_Element editElem = this.curC.GetElements().get(i);
+                ElemPopper pop = new ElemPopper(this.main, this,this.curC, editElem);
 
                 this.main.Refresh();
                 return;
@@ -164,7 +161,8 @@ public class ClassController implements EventHandler<ActionEvent>{
         i=0;
         for(Button butt : this.edditFuncButts){
             if(event.getSource()==butt){
-                ElemPopper pop = new ElemPopper(this.main, this,this.curC, this.curC.Get_Element(this.funcs.get(i)));
+                CD_Element editFunc = this.curC.GetFunca().get(i);
+                ElemPopper pop = new ElemPopper(this.main, this,this.curC, editFunc);
                 
 
                 this.main.Refresh();
@@ -176,7 +174,8 @@ public class ClassController implements EventHandler<ActionEvent>{
 
         for(Button butt : this.removeArgs){
             if(event.getSource()==butt){
-                this.curC.remElement(this.args.get(i));
+                CD_Element editElem = this.curC.GetElements().get(i);
+                this.curC.remElement(editElem);
                 this.main.Refresh();
                 return;
             }
@@ -186,7 +185,8 @@ public class ClassController implements EventHandler<ActionEvent>{
         
         for(Button butt : this.removeFunc){
             if(event.getSource()==butt){
-                this.curC.remFunction(this.funcs.get(i));
+                CD_Element editFunc = this.curC.GetFunca().get(i);
+                this.curC.remFunction(editFunc);
                 this.main.Refresh();
                 return;
             }
@@ -194,6 +194,4 @@ public class ClassController implements EventHandler<ActionEvent>{
         }
 
     }
-
-    class Delta { double x, y; }
 }

@@ -1,6 +1,7 @@
-package classes;
+package ui;
 
 //My improts
+import ui.*;
 import classes.*;
 //FX imports
 //Roots
@@ -60,9 +61,9 @@ public class CPopper implements EventHandler<ActionEvent>{
 
     Button b_submitter;
 
-    Class edditedC;
+    classes.Class edditedC;
 
-    public CPopper(MainC backSide,ClassController calledByGrave,Class editedC){
+    public CPopper(MainC backSide,ClassController calledByGrave,classes.Class editedC){
         this.backSide = backSide;
         this.edditedC = editedC;
         this.toSave = calledByGrave;

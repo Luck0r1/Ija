@@ -27,14 +27,18 @@ public class ClassDiagram{
         this.name=name;
     }
 
-    public void Class_Add(String new_clss){
-        this.classes.add( new Class(new_clss) );
+    public Class Class_Add(String new_clss){
+        Class newObj = new Class(new_clss);
+        newObj.SetId(this.classes.size());
+        this.classes.add( newObj );
+        return newObj;
     }
 
-    public Class Class_Get(String name_clss){
-        for(Class clss : this.classes){
-            if(clss.GetName() == name_clss)
-                return clss;
+    public Class Class_Get_By_Id(int id){
+        for (Class C : this.classes){
+            if(id==C.GetId()){
+                return C;
+            }
         }
         return null;
     }
@@ -46,8 +50,12 @@ public class ClassDiagram{
         }
     }
 
-    public void Bind_Add(String new_bind){
-        this.bind.add(new Bind(new_bind));
+    public void Bind_Add(String new_bind,Class c1,Class c2){
+        this.bind.add(new Bind(new_bind,c1,c2));
+    }
+
+    public void Bind_FAdd(Bind neu){
+        this.bind.add(neu);
     }
 
     public Bind Bind_Get(String name_bind){
@@ -58,11 +66,8 @@ public class ClassDiagram{
         return null;
     }
 
-    public void Bind_Delete(String rem_bind){
-        for(Bind bind : this.bind){
-            if(bind.GetName() == rem_bind)
-                this.bind.remove(bind);
-        }
+    public void Bind_Delete(Bind rem_bind){
+        this.bind.remove(rem_bind);
     }
 
     public List<Class> GetClasses(){

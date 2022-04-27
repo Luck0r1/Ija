@@ -10,6 +10,8 @@ import classes.CD_Element;
 
 public class Class{
 
+    private int id;
+
     private List<CD_Element> elements;
     private List<CD_Element> functiona;
     private String name;
@@ -36,6 +38,14 @@ public class Class{
         return this.y;
     }
 
+    public int GetId(){
+        return this.id;
+    }
+
+    public void SetId(int newId){
+        this.id=newId;
+    }
+
     public String GetName(){
         return this.name;
     }
@@ -52,8 +62,10 @@ public class Class{
         return this.functiona;
     }
 
-    public void addElement(String newElem){
-        this.elements.add( new CD_Element(newElem));
+    public CD_Element addElement(String newElem){
+        CD_Element newObj = new CD_Element(newElem);
+        this.elements.add(newObj);
+        return newObj;
     }
 
     public void forceAdd(CD_Element neu){
@@ -64,42 +76,38 @@ public class Class{
         }
     }
 
-    public void addFunc(String newFunc){
+    public CD_Element addFunc(String newFunc){
         CD_Element tAdd = new CD_Element(newFunc);
         tAdd.SetFunc(true);
         this.functiona.add(tAdd);
+        return tAdd;
     }
 
+    /*
     public CD_Element Get_Element(String toSearch){
         for(CD_Element func : this.elements){
-            if(func.GetName() == toSearch){
-                return func;
-            }
-        }
-        for(CD_Element func : this.functiona){
-            if(func.GetName() == toSearch){
+            if(func.GetName().equals(toSearch)){
                 return func;
             }
         }
         return null;
     }
 
-    public void remElement(String toRem){
-        for(CD_Element elem : this.elements){
-            if(elem.GetName()==toRem){
-                this.elements.remove(elem);
-                break;
+    public CD_Element Get_Func(String toSearch){
+        for(CD_Element func : this.functiona){
+            if(func.GetName().equals(toSearch)){
+                return func;
             }
         }
+        return null;
+    }*/
+
+    public void remElement(CD_Element toRem){
+        this.elements.remove(toRem);
     }
 
-    public void remFunction(String toRem){
-        for(CD_Element func : this.functiona){
-            if(func.GetName() == toRem){
-                this.functiona.remove(func);
-                break;
-            }
-        }
+    public void remFunction(CD_Element toRem){
+        this.functiona.remove(toRem);
     }
 
     public void reNameElement(String old,String newN){
@@ -118,5 +126,13 @@ public class Class{
                 break;
             }
         }
+    }
+
+    public int GetGraphicWidth(){
+        return 200;
+    }
+
+    public int GetGraphicHeigth(){
+        return 120+this.elements.size()*25 + this.functiona.size()*25;  
     }
 }

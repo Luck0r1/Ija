@@ -1,6 +1,7 @@
-package classes;
+package ui;
 
 //My improts
+import ui.*;
 import classes.*;
 //FX imports
 //Roots
@@ -44,6 +45,7 @@ import javafx.scene.layout.Pane;
 
 import java.util.*;
 
+import support.*;
 import java.io.File;
 
 import javafx.geometry.Pos;
@@ -65,14 +67,15 @@ public class ElemPopper implements EventHandler<ActionEvent>{
 
     Button b_submitter;
 
-    Class edditedC;
+    classes.Class edditedC;
 
     TextField namer;
     TextField typer;
+    TextField rTyper;
 
     String voider;
 
-    public ElemPopper(MainC backSide,ClassController calledByGrave,Class editedC, CD_Element reCaller){
+    public ElemPopper(MainC backSide,ClassController calledByGrave,classes.Class editedC, CD_Element reCaller){
         this.backSide = backSide;
         this.edditedC = editedC;
         this.toSave = calledByGrave;
@@ -129,13 +132,12 @@ public class ElemPopper implements EventHandler<ActionEvent>{
         adder.setAlignment(Pos.CENTER);
         if(this.toEdit.IsFunc()){
             Label lC = new Label("(");
-            Label rC = new Label(")");
+            Label rC = new Label("):");
             TextField texter = new TextField(this.toEdit.GetType());
+            TextField texter2 = new TextField(this.toEdit.GetReturnT());
+            this.rTyper = texter2;
             this.typer = texter;
-            texter.setOnAction(this);
-            adder.getChildren().add(lC);
-            adder.getChildren().add(texter);
-            adder.getChildren().add(rC);
+            adder.getChildren().addAll(lC,texter,rC,texter2);
         }else{
             Label lc = new Label(":");
             TextField texterNumeroDuo = new TextField(this.toEdit.GetType());
@@ -163,16 +165,20 @@ public class ElemPopper implements EventHandler<ActionEvent>{
 
     }
 
-
+    public void SetFields(){
+        this.toEdit.ReName(this.namer.getText());
+        this.toEdit.ReType(this.typer.getText());
+        if(this.rTyper!=null)
+        this.toEdit.SetReturnT(this.rTyper.getText());
+    }
 
     @Override
     public void handle(ActionEvent event){
-        this.toEdit.ReName(this.namer.getText());
-        this.toEdit.ReType(this.typer.getText());
+        this.SetFields();
 
         if(event.getSource()==this.b_isArg){
             if(this.toEdit.IsFunc()){
-                this.edditedC.remFunction(this.toEdit.GetName());
+                this.edditedC.remFunction(this.toEdit);
                 this.toEdit.SetFunc(false);
                 this.edditedC.forceAdd(this.toEdit);
                 Scene toShow = this.popMaker();
@@ -181,7 +187,7 @@ public class ElemPopper implements EventHandler<ActionEvent>{
         }
         else if (event.getSource()==this.b_isFunc){
             if(this.toEdit.IsFunc()==false){
-                this.edditedC.remElement(this.toEdit.GetName());
+                this.edditedC.remElement(this.toEdit);
                 this.toEdit.SetFunc(true);
                 this.edditedC.forceAdd(this.toEdit);
                 Scene toShow = this.popMaker();

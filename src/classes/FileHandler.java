@@ -1,6 +1,7 @@
 
 package classes;
 
+import support.AccesT;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +33,7 @@ public class FileHandler{
 
         for (File phil : new File(dir).listFiles()){
             if(phil.getName().equals(old)){
-                phil.renameTo(new File(dir+"/"+newN));
+                phil.renameTo(new File(newN));
             }
         }
     }
@@ -69,6 +70,7 @@ public class FileHandler{
                     Element add_class = doc.createElement(n_class.GetName());
                     add_class.setAttribute("x", Integer.toString( n_class.GetPosX()));
                     add_class.setAttribute("y", Integer.toString( n_class.GetPosY()));
+                    add_class.setAttribute("id", Integer.toString(n_class.GetId()));
                     Element add_args = doc.createElement("args");
                     for(CD_Element n_elem : n_class.GetElements()){
                         Element add_elem = doc.createElement(n_elem.GetName());
@@ -81,6 +83,7 @@ public class FileHandler{
                         Element add_elem = doc.createElement(n_elem.GetName());
                         add_elem.setAttribute("type", n_elem.GetType());
                         add_elem.setAttribute("access", n_elem.GetAccess());
+                        add_elem.setAttribute("rtype", n_elem.GetReturnT());
                         add_funcs.appendChild(add_elem);
                     }
                     add_class.appendChild(add_args);
@@ -90,10 +93,15 @@ public class FileHandler{
 
                 for (Bind n_bind : curClass.GetBinds()) {
                     Element add_bind = doc.createElement(n_bind.GetName());
+                    add_bind.setAttribute("c1", n_bind.Get_C1());
+                    add_bind.setAttribute("c2", n_bind.Get_C2());
                     for(Class n_elem : n_bind.GetClasses()){
+
                         Element add_c = doc.createElement(n_elem.GetName());
+                        add_c.setAttribute("id", Integer.toString(n_elem.GetId()));
                         add_bind.appendChild(add_c);
                     }
+                    binds.appendChild(add_bind);
                 }
 
                 TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -134,42 +142,47 @@ public class FileHandler{
                 NodeList argList = clssList.item(i).getChildNodes().item(0).getChildNodes();
                 NodeList funcList = clssList.item(i).getChildNodes().item(1).getChildNodes();
 
-                toLoad.Class_Add( clssList.item(i).getNodeName());
-                Class toAdd = toLoad.Class_Get(clssList.item(i).getNodeName());
-                toAdd.SetPos(Integer.parseInt( clssList.item(i).getAttributes().item(0).getNodeValue()),Integer.parseInt( clssList.item(i).getAttributes().item(1).getNodeValue()));
+                Class toAdd = toLoad.Class_Add( clssList.item(i).getNodeName());
+                toAdd.SetPos(Integer.parseInt( clssList.item(i).getAttributes().item(1).getNodeValue()),Integer.parseInt( clssList.item(i).getAttributes().item(2).getNodeValue()));
+                toAdd.SetId(Integer.parseInt(clssList.item(i).getAttributes().item(0).getNodeValue()));
+
                 for(int j = 0 ; j<argList.getLength();j++){
-                    toAdd.addElement(argList.item(j).getNodeName());
-                    toAdd.Get_Element(argList.item(j).getNodeName()).ReType(argList.item(j).getAttributes().item(0).getNodeName());
-                    if(argList.item(j).getAttributes().item(1).getNodeName().equals("0")){
-                        toAdd.Get_Element(argList.item(j).getNodeName()).SetType(AccesT.PUBLIC);
+                    CD_Element newElement = toAdd.addElement(argList.item(j).getNodeName());
+                    newElement.ReType(argList.item(j).getAttributes().getNamedItem("type").getNodeValue());
+                    if(argList.item(j).getAttributes().getNamedItem("access").getNodeValue().equals("public")){
+                        newElement.SetType(AccesT.PUBLIC);
                     }else
-                    if(argList.item(j).getAttributes().item(1).getNodeName().equals("1")){
-                        toAdd.Get_Element(argList.item(j).getNodeName()).SetType(AccesT.PROTECTED);
+                    if(argList.item(j).getAttributes().getNamedItem("access").getNodeValue().equals("protected")){
+                        newElement.SetType(AccesT.PROTECTED);
                     }else{
-                        toAdd.Get_Element(argList.item(j).getNodeName()).SetType(AccesT.PRIVATE);
+                        newElement.SetType(AccesT.PRIVATE);
                     }
                 }
+
                 for(int j = 0 ; j<funcList.getLength();j++){
-                    toAdd.addFunc(funcList.item(j).getNodeName());
-                    toAdd.Get_Element(argList.item(j).getNodeName()).ReType(argList.item(j).getAttributes().item(0).getNodeName());
-                    if(argList.item(j).getAttributes().item(1).getNodeName().equals("0")){
-                        toAdd.Get_Element(argList.item(j).getNodeName()).SetType(AccesT.PUBLIC);
+                    CD_Element newFunction = toAdd.addFunc(funcList.item(j).getNodeName());
+                    newFunction.ReType(funcList.item(j).getAttributes().getNamedItem("type").getNodeValue());
+                    newFunction.SetReturnT(funcList.item(j).getAttributes().getNamedItem("rtype").getNodeValue());
+                    if(funcList.item(j).getAttributes().getNamedItem("access").getNodeValue().equals("public")){                    
+                        newFunction.SetType(AccesT.PUBLIC);
                     }else
-                    if(argList.item(j).getAttributes().item(1).getNodeName().equals("1")){
-                        toAdd.Get_Element(argList.item(j).getNodeName()).SetType(AccesT.PROTECTED);
+                    if(funcList.item(j).getAttributes().getNamedItem("access").getNodeValue().equals("protected")){
+                        newFunction.SetType(AccesT.PROTECTED);
                     }else{
-                        toAdd.Get_Element(argList.item(j).getNodeName()).SetType(AccesT.PRIVATE);
+                        newFunction.SetType(AccesT.PRIVATE);
                     }
                 }
             }
 
             for(int i=0; i<bindList.getLength();i++ ){
-                toLoad.Bind_Add( bindList.item(i).getLocalName() );
-                Bind toAdd = toLoad.Bind_Get(clssList.item(i).getLocalName());
-                NodeList elemsToAdd = clssList.item(i).getChildNodes();
-                for(int j = 0 ; j<elemsToAdd.getLength();j++){
-                    toAdd.Class_Add (toLoad.Class_Get(elemsToAdd.item(j).getLocalName()));
-                }
+                NodeList elemsToAdd = bindList.item(i).getChildNodes();
+                Bind adder = new Bind(bindList.item(i).getNodeName(),
+                                        toLoad.Class_Get_By_Id(Integer.parseInt(elemsToAdd.item(0).getAttributes().item(0).getNodeValue())),
+                                        toLoad.Class_Get_By_Id(Integer.parseInt(elemsToAdd.item(1).getAttributes().item(0).getNodeValue())));
+                adder.Set_C1(bindList.item(i).getAttributes().item(0).getNodeName());
+                adder.Set_C2(bindList.item(i).getAttributes().item(1).getNodeName());
+                toLoad.Bind_FAdd(adder);
+                
             }
             
             return toLoad;
