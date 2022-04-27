@@ -43,6 +43,16 @@ public class ClassDiagram{
         return null;
     }
 
+    public int ClassN_Get(String namer){
+        int i=0;
+        for(Class clss : this.classes){
+            if(clss.GetName() == namer)
+                return i;
+            i++;
+        }
+        return -1;
+    }
+
     public void Class_Delete(String rem_clss){
         for(Class clss : this.classes){
             if(clss.GetName() == rem_clss)
