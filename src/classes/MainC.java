@@ -50,6 +50,7 @@ import javafx.scene.shape.Line;
 
 import java.util.*;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.File;
 
 public class MainC extends Application implements EventHandler<ActionEvent>{
@@ -70,50 +71,27 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
     List<Button> renameClasButtons;
     List<Button> deleteClassButtons;
 
-    List<VBox> newClassSizeData;
+    //Side menu
+    Button sb_addDia;
+    List<Button> sb_loadDia;
+    List<Button> sb_renameDia;
+    List<Button> sb_removeDia;
 
     Button b_AddClass;
     Button b_Save;
 
-    ArrayList<ArrayList<Integer>> mapper;
+    Button b_debug;
+    boolean in_debug=false;
 
-    int dimX;
-    int dimY;
-    boolean loaded=false;
+    Mapper mapper;
+
+    int dimX=1920;
+    int dimY=1080;
+
+    ProgramState pState = ProgramState.SMALLMENU;
 
     public void FireStarter(String[] args) {
         launch(args);
-    }
-
-    private void LoadMap(int x,int y){
-        this.mapper = new ArrayList<ArrayList<Integer>>();
-        for (int i=0;i<y/5;i++)
-            this.mapper.add(new ArrayList<Integer>(Collections.nCopies(x/5, 0)));
-    }
-
-    private void FillMap(int strtX, int startY, int endX, int endY,int h){
-        for(int i = strtX / 5; i<endX/5;i++){
-            for (int j = startY/5; j<endY/5;j++){
-                this.mapper.get(i).set(j, h);
-            }
-        }
-    }
-
-    private void FillAll(){
-        this.LoadMap(this.dimX, this.dimY);
-        int i=0;
-        for (Class c : this.curClass.GetClasses()){
-            int bgnX = (int)Math.round(c.GetPosX()+20);
-            int bgnY = (int)Math.round(c.GetPosY()+40);
-            int endX = bgnX + (int)Math.round(this.newClassSizeData.get(i).getWidth());
-            int endY = bgnY + (int)Math.round(this.newClassSizeData.get(i).getHeight());
-            this.FillMap(bgnX, bgnY, endX, endY, i+1);
-            i++;
-        }
-    }
-
-    public Integer GetMap(double posX,double posY){
-        return this.mapper.get((int)Math.round(posX/5)).get((int)Math.round(posY/5));
     }
 
     /*Small menu functions*/
@@ -160,17 +138,58 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         Scene nScene = new Scene(layout,400,200);
         return nScene;
     }
+    
+
+    private VBox GetSideMenu(){
+        VBox v = new VBox();
+        v.setPrefWidth(300);
+        v.setPrefHeight(this.dimY);
+        v.setStyle("-fx-border-style: solid inside;"
+                            + "-fx-border-width: 2;"
+                            + "-fx-border-color: blue;"
+                            + "-fx-background-color: grey;");
+        //v.setBackground(new Background(new BackgroundFill(java.awt.Color.darkGray,CornerRadii.EMPTY,Insets.EMPTY)));
+
+        Button addNewDiagram = new Button("Add new SubDia");
+        addNewDiagram.setOnAction(this);
+        this.sb_addDia = addNewDiagram;
+        addNewDiagram.setPrefWidth(300);
+        v.getChildren().add(addNewDiagram);
+
+        for(SequenceDia sd : this.curClass.GetSeqD()){
+            
+            HBox oneSd = new HBox();
+
+            Button loadDia = new Button(sd.GetName());
+            Button renameDia = new Button("Rename");
+            Button deleteDia = new Button("Delete");
+
+            loadDia.setOnAction(this);
+            renameDia.setOnAction(this);
+            deleteDia.setOnAction(this);
+
+            this.sb_loadDia.add(loadDia);
+            this.sb_removeDia.add(deleteDia);
+            this.sb_renameDia.add(renameDia);
+
+            loadDia.setPrefWidth(200);
+            renameDia.setPrefWidth(50);
+            deleteDia.setPrefWidth(50);
+
+            oneSd.getChildren().addAll(loadDia,renameDia,deleteDia);
+            v.getChildren().add(oneSd);
+        }
+        return v;
+    }
 
     private Pane LoadStage(){
-        this.dimX = 1000;
-        this.dimY = 800;
-
-        this.newClassSizeData = new ArrayList<VBox>();
-
 
         Pane layout = new Pane();
 
         HBox buttonen = new HBox();
+
+        VBox sideM = GetSideMenu();
+        layout.getChildren().add(sideM);
 
         Button addC_butt = new Button("Add Class");
         addC_butt.setOnAction(this);
@@ -179,7 +198,14 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         this.b_AddClass = addC_butt;
         this.b_Save = save_butt;
         buttonen.getChildren().add(addC_butt);
-        buttonen.getChildren().add(save_butt);  
+        buttonen.getChildren().add(save_butt);
+        buttonen.setLayoutX(300);
+        
+        /*Debugg purposes*/
+        Button debugMode = new Button("Debug");
+        debugMode.setOnAction(this);
+        this.b_debug=debugMode;
+        buttonen.getChildren().add(debugMode);
     
         layout.getChildren().add(buttonen);
 
@@ -196,6 +222,7 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
             Button move = new Button("Move");
             Button addBind = new Button("Add Bind");
 
+            /* Line drag functions Bgn*/
             addBind.setOnMousePressed(new EventHandler<MouseEvent>(){
                 @Override public void handle(MouseEvent mouseEvent) {
                     layout.getChildren().add(drawer);
@@ -215,15 +242,15 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
 
             addBind.setOnMouseReleased(new EventHandler<MouseEvent>(){
                 @Override public void handle(MouseEvent mouseEvent) {
-                    if(GetMap(mouseEvent.getSceneX(),mouseEvent.getSceneY())>0){
-                        MainC.this.curClass.Bind_Add("new_bind",curClass,MainC.this.curClass.GetClasses().get(GetMap(mouseEvent.getSceneX(),mouseEvent.getSceneY())-1));
+                    if(mapper.GetMap(mouseEvent.getSceneX(),mouseEvent.getSceneY())>0){
+                        MainC.this.curClass.Bind_Add("new_bind",curClass,MainC.this.curClass.GetClasses().get(mapper.GetMap(mouseEvent.getSceneX(),mouseEvent.getSceneY())-1));
                         System.out.println("hit");
                     }
                     layout.getChildren().remove(drawer);
                     MainC.this.Refresh();
                 }
             });
-            
+            /*Line drag functions End */            
 
             newButts.getChildren().addAll(move,addBind);
 
@@ -232,6 +259,7 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
             move.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override public void handle(MouseEvent mouseEvent) {
                   // record a delta distance for the drag and drop operation.
+                  mapper.UnfilSpaceForClass(curClass);
                   dragDelta.x = newClass.getLayoutX() - mouseEvent.getSceneX();
                   dragDelta.y = newClass.getLayoutY() - mouseEvent.getSceneY();
                 }
@@ -239,29 +267,28 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
 
             move.setOnMouseDragged(new EventHandler<MouseEvent>() {
                 @Override public void handle(MouseEvent mouseEvent) {
-                  newClass.setLayoutX(mouseEvent.getSceneX() + dragDelta.x);
-                  newClass.setLayoutY(mouseEvent.getSceneY() + dragDelta.y);
+                    Dimension h = mapper.FindClosestPlace(curClass, mouseEvent.getSceneX() + dragDelta.x, mouseEvent.getSceneY() + dragDelta.y,dimX);
+                    newClass.setLayoutX(Converts.ToWorldCoordinatesX((int)h.getWidth()));
+                    newClass.setLayoutY(Converts.ToWorldCoordinatesY((int)h.getHeight()));
                 }
             });
 
             move.setOnMouseReleased(new EventHandler<MouseEvent>() {
                 @Override public void handle(MouseEvent mouseEvent) {
-                    curClass.SetPos((int)Math.round(newClass.getLayoutX())-20, (int)Math.round(newClass.getLayoutY())-40);
-                    newClass.setLayoutX(curClass.GetPosX()+20);
-                    newClass.setLayoutY(curClass.GetPosY()+40);
+                    curClass.SetPos(Converts.ToMapCoordinatesX(newClass.getLayoutX()), Converts.ToMapCoordinatesY(newClass.getLayoutY()));
+                    newClass.setLayoutX(Converts.ToWorldCoordinatesX(curClass.GetPosX()));
+                    newClass.setLayoutY(Converts.ToWorldCoordinatesY(curClass.GetPosY()));
                     MainC.this.Refresh();
                 }
             });
 
 
-            newClass.setLayoutX(curClass.GetPosX()+20);
-            newClass.setLayoutY(curClass.GetPosY()+40);
+            newClass.setLayoutX(Converts.ToWorldCoordinatesX(curClass.GetPosX()));
+            newClass.setLayoutY(Converts.ToWorldCoordinatesY(curClass.GetPosY()));
 
             newClass.getChildren().add(newButts);
             layout.getChildren().add(newClass);
             i++;
-
-            this.newClassSizeData.add(newClass);
         }
         
         return layout;
@@ -271,10 +298,21 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         Pane layout = this.LoadStage();
         Scene newScene = new Scene(layout,this.dimX,this.dimY);
         this.primaryStage.setScene(newScene);
-        this.FillAll();
+        this.mapper=new Mapper(this.dimX, this.dimY, this.curClass);
         Group addG = this.RefreshLines();
         layout.getChildren().add(addG);
+        this.primaryStage.setMaximized(true);
         this.primaryStage.show();
+    }
+
+    public void DebugRefresh(){
+        Pane layout = this.mapper.DebugMap();
+        Button debugMode = new Button("Debug");
+        debugMode.setOnAction(this);
+        this.b_debug=debugMode;
+        layout.getChildren().add(debugMode);
+        Scene newScene = new Scene(layout,this.dimX,this.dimY);
+        this.primaryStage.setScene(newScene);
     }
 
     public void SmallRefresh(){
@@ -294,21 +332,25 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         return Side.BOTTOM;
     }
 
-    private Dimension GetConPoint(Side x, VBox conPoint){
+    private Dimension GetConPoint(Side x, classes.Class c){
         Dimension pair = new Dimension();
         if(x==Side.TOP){
-            pair.setSize(conPoint.getLayoutX(),conPoint.getLayoutY());
-        }
+            pair.setSize(c.GetPosX(),c.GetPosY());
+        }   
         else if(x==Side.BOTTOM){
-            pair.setSize(conPoint.getLayoutX(),conPoint.getLayoutY()+conPoint.getHeight());
+            pair.setSize(c.GetPosX(),c.GetPosY()+c.GetGraphicHeigth());
         }
         else if(x==Side.LEFT){
-            pair.setSize(conPoint.getLayoutX(),conPoint.getLayoutY());
+            pair.setSize(c.GetPosX(),c.GetPosY());
         }
         else{
-            pair.setSize(conPoint.getLayoutX()+conPoint.getWidth(),conPoint.getLayoutY());
+            pair.setSize(c.GetPosX()+c.GetGraphicWidth(),c.GetPosY());
         }
         return pair;
+    }
+
+    private Group DrawLines(){
+        return null;
     }
 
 
@@ -354,8 +396,8 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
             else 
                 f=c1_p2;
 
-            Dimension fDim = this.GetConPoint(f, this.newClassSizeData.get(c1_num));
-            Dimension tDim = this.GetConPoint(this.Oppose(f), this.newClassSizeData.get(c2_num));
+            Dimension fDim = this.GetConPoint(f, c1);
+            Dimension tDim = this.GetConPoint(this.Oppose(f), c2);
             BindController ctrl = new BindController(fDim.getWidth(), fDim.getHeight(), tDim.getWidth(), tDim.getHeight(),f, b,this,this.curClass);
             Group newLine =  ctrl.GetDrawn();
 
@@ -370,6 +412,10 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         primaryStage.setTitle("Dia Builder");
         this.fh = new FileHandler();
 
+        //Dimension screenSize = Toolkit. getDefaultToolkit(). getScreenSize();
+        //System.out.println((int)screenSize.getWidth());
+        //System.out.println((int)screenSize.getHeight());
+
         Scene showScene = this.UpdateFList();
         
         primaryStage.setScene(showScene);
@@ -381,7 +427,7 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
     @Override
     public void handle(ActionEvent event){
 
-        if(!this.loaded){
+        if(this.pState==ProgramState.SMALLMENU){
 
             if(event.getSource() == this.addClassDiagram){
                 this.fh.New(this.pathway);
@@ -393,8 +439,9 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
             for(int i =0;i<this.loadClassButtons.size();i++){
                 String file = this.loadClassButtons.get(i).getText();
                 if(event.getSource()==this.loadClassButtons.get(i)){
-                    this.loaded=true;
+                    this.pState=ProgramState.MAINER;
                     this.curClass = this.fh.Load(this.pathway, file);
+                    this.mapper=new Mapper(this.dimX, this.dimY,curClass);
                     this.Refresh();
                     break;
                 }
@@ -409,9 +456,13 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
                     break;
                 }
             }
-        }else{
+        }
+        else
+        if(this.pState==ProgramState.MAINER){
             if(event.getSource()==this.b_AddClass){
                 Class newC= this.curClass.Class_Add("new_clss");
+                Dimension h = this.mapper.FindClosestPlace(newC, 0, 0,this.dimX);
+                newC.SetPos((int)h.getWidth(), (int)h.getHeight());
                 this.Refresh();
                 return;
             }
@@ -419,7 +470,45 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
                 this.fh.Save(this.pathway,this.curClass);
                 return;
             }
+            else if(event.getSource()==this.b_debug){
+                if(this.in_debug){
+                    this.Refresh();
+                }else{
+                    this.DebugRefresh();
+                }
+                this.in_debug= !this.in_debug;
+                return;
+            }
+            else if(event.getSource()==this.sb_addDia){
+
+                return;
+            }
+
+            for(int i=0;i<this.sb_loadDia.size();i++){
+                if(event.getSource()==this.sb_loadDia.get(i)){
+
+                    return;
+                }
+            }
+            for(int i=0;i<this.sb_renameDia.size();i++){
+                if(event.getSource()==this.sb_renameDia.get(i)){
+
+                    return;
+                }
+            }
+            for(int i=0;i<this.sb_removeDia.size();i++){
+                if(event.getSource()==this.sb_removeDia.get(i)){
+
+                    return;
+                }
+            }
         }
     }
     
+}
+
+enum ProgramState{
+    SMALLMENU,
+    MAINER,
+    SIDEDIA
 }

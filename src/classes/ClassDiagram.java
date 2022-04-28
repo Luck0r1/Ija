@@ -12,11 +12,13 @@ public class ClassDiagram{
     private String name;
     private List<Class> classes;
     private List<Bind> bind;
+    private List<SequenceDia> sd;
 
     public ClassDiagram(String name){
         this.name=name;
         this.classes = new ArrayList<Class>();
         this.bind = new ArrayList<Bind>();
+        this.sd = new ArrayList<SequenceDia>();
     }
 
     public String GetName(){
@@ -80,6 +82,15 @@ public class ClassDiagram{
         this.bind.remove(rem_bind);
     }
 
+
+    public void SequenceDia_Add(String name){
+        this.sd.add(new SequenceDia(name));
+    }
+
+    public void SequenceDia_Remove(SequenceDia sd){
+        this.sd.remove(sd);
+    }
+
     public List<Class> GetClasses(){
         return this.classes;
     }
@@ -87,4 +98,9 @@ public class ClassDiagram{
     public List<Bind> GetBinds(){
         return this.bind;
     }
+
+    public List<SequenceDia> GetSeqD(){
+        return this.sd;
+    }
+
 }

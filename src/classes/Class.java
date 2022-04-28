@@ -83,25 +83,6 @@ public class Class{
         return tAdd;
     }
 
-    /*
-    public CD_Element Get_Element(String toSearch){
-        for(CD_Element func : this.elements){
-            if(func.GetName().equals(toSearch)){
-                return func;
-            }
-        }
-        return null;
-    }
-
-    public CD_Element Get_Func(String toSearch){
-        for(CD_Element func : this.functiona){
-            if(func.GetName().equals(toSearch)){
-                return func;
-            }
-        }
-        return null;
-    }*/
-
     public void remElement(CD_Element toRem){
         this.elements.remove(toRem);
     }
