@@ -9,10 +9,6 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 
-//Image
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-
 //Buttons
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -45,7 +41,6 @@ import javafx.scene.layout.Pane;
 
 import java.util.*;
 
-import java.io.File;
 
 import javafx.geometry.Pos;
 

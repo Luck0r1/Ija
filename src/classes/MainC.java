@@ -83,7 +83,7 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
     Button b_debug;
     boolean in_debug=false;
 
-    Mapper mapper;
+    public Mapper mapper;
 
     int dimX=1920;
     int dimY=1080;
@@ -306,6 +306,7 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
     }
 
     public void DebugRefresh(){
+        this.mapper.DebugFillCons(this.curClass);
         Pane layout = this.mapper.DebugMap();
         Button debugMode = new Button("Debug");
         debugMode.setOnAction(this);
@@ -319,17 +320,6 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         Scene newScene = this.UpdateFList();
         this.primaryStage.setScene(newScene);
         this.primaryStage.show();
-    }
-
-    private Side Oppose(Side x){
-        if(x == Side.LEFT)
-        return Side.RIGHT;
-        else if(x==Side.RIGHT)
-        return Side.LEFT;
-        else if(x==Side.BOTTOM)
-        return Side.TOP;
-        else
-        return Side.BOTTOM;
     }
 
     private Dimension GetConPoint(Side x, classes.Class c){
@@ -356,49 +346,14 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
 
     public Group RefreshLines(){
         Group newGr = new Group();
-
+        for(classes.Class c : this.curClass.GetClasses())
+            c.RefillConnectors();
         for(Bind b : this.curClass.GetBinds()){
-            Class c1 = b.GetClasses().get(0);
-            Class c2 = b.GetClasses().get(1);
 
             
-            int c1_num = c1.GetId();
-            int c2_num = c2.GetId();
+            this.mapper.FillBind(b);
 
-            int c1_x = c1.GetPosX();
-            int c1_y = c1.GetPosY();
-            int c2_x = c2.GetPosX();
-            int c2_y = c2.GetPosY();
-
-            int len_x;
-            int len_y;
-            Side c1_p1;
-            Side c1_p2;
-            Side f;
-
-            if(c1_x < c2_x){
-                len_x = c2_x - c1_x;
-                c1_p1 = Side.RIGHT;
-            }else{
-                len_x = c1_x - c2_x;
-                c1_p1 = Side.LEFT;
-            }
-            if(c1_y < c2_y){
-                len_y = c2_y - c1_y;
-                c1_p2 = Side.TOP;
-            }else{
-                len_y = c1_y - c2_y;
-                c1_p2=Side.BOTTOM;
-            }
-
-            if(len_x > len_y)
-                f = c1_p1;
-            else 
-                f=c1_p2;
-
-            Dimension fDim = this.GetConPoint(f, c1);
-            Dimension tDim = this.GetConPoint(this.Oppose(f), c2);
-            BindController ctrl = new BindController(fDim.getWidth(), fDim.getHeight(), tDim.getWidth(), tDim.getHeight(),f, b,this,this.curClass);
+            BindController ctrl = new BindController(b,this,this.curClass);
             Group newLine =  ctrl.GetDrawn();
 
             newGr.getChildren().add(newLine);
@@ -411,10 +366,6 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
     public void start(Stage primaryStage) throws Exception{        
         primaryStage.setTitle("Dia Builder");
         this.fh = new FileHandler();
-
-        //Dimension screenSize = Toolkit. getDefaultToolkit(). getScreenSize();
-        //System.out.println((int)screenSize.getWidth());
-        //System.out.println((int)screenSize.getHeight());
 
         Scene showScene = this.UpdateFList();
         

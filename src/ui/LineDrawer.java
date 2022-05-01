@@ -50,144 +50,353 @@ import ui.*;
 
 public class LineDrawer{
     
-    private Group DrawVertical(double LM_pos){
+    private Group DrawVertical(Dimension LM_pos){
         Group g = new Group();
-
+        double LM_Pos_x = LM_pos.getWidth();
+        double LM_Pos_y = LM_pos.getHeight();
         Line l = new Line();
-        l.setStartX(LM_pos+2.5);
-        l.setStartY(LM_pos);
-        l.setEndX(LM_pos+2.5);
-        l.setEndY(LM_pos+5);
+        l.setStartX(LM_Pos_x+2.5);
+        l.setStartY(LM_Pos_y);
+        l.setEndX(LM_Pos_x+2.5);
+        l.setEndY(LM_Pos_y+5);
         g.getChildren().add(l);
 
         return g;
     }
 
-    private Group DrawHorizontal(double LM_pos){
+    private Group DrawHorizontal(Dimension LM_pos){
         Group g = new Group();
-
+        double LM_Pos_x = LM_pos.getWidth();
+        double LM_Pos_y = LM_pos.getHeight();
         Line l = new Line();
-        l.setStartX(LM_pos);
-        l.setStartY(LM_pos+2.5);
-        l.setEndX(LM_pos+5);
-        l.setEndY(LM_pos+2.5);
+        l.setStartX(LM_Pos_x );
+        l.setStartY(LM_Pos_y+2.5);
+        l.setEndX(LM_Pos_x +5);
+        l.setEndY(LM_Pos_y+2.5);
         g.getChildren().add(l);
 
         return g;
     }
 
-    private Group DrawNine(double LM_pos){
+    private Group DrawNine(Dimension LM_pos){
         Group g = new Group();
 
         Line l1 = new Line();
         Line l2 = new Line();
 
-        l1.setStartX(LM_pos);
-        l1.setStartY(LM_pos+2.5);
-        l1.setEndX(LM_pos+2.5);
-        l1.setEndY(LM_pos+2.5);
+        double LM_Pos_x = LM_pos.getWidth();
+        double LM_Pos_y = LM_pos.getHeight();
 
-        l2.setStartX(LM_pos+2.5);
-        l2.setStartY(LM_pos+2.5);
-        l2.setEndX(LM_pos+2.5);
-        l2.setEndY(LM_pos);        
+        l1.setStartX(LM_Pos_x);
+        l1.setStartY(LM_Pos_y+2.5);
+        l1.setEndX(LM_Pos_x+2.5);
+        l1.setEndY(LM_Pos_y+2.5);
+
+        l2.setStartX(LM_Pos_x+2.5);
+        l2.setStartY(LM_Pos_y+2.5);
+        l2.setEndX(LM_Pos_x+2.5);
+        l2.setEndY(LM_Pos_y);        
 
         g.getChildren().addAll(l1,l2);
 
         return g;
     }
 
-    private Group DrawThree(double LM_pos){
+    private Group DrawThree(Dimension LM_pos){
         Group g = new Group();
 
         Line l1 = new Line();
         Line l2 = new Line();
 
-        l1.setStartX(LM_pos+2.5);
-        l1.setStartY(LM_pos);
-        l1.setEndX(LM_pos+2.5);
-        l1.setEndY(LM_pos+2.5);
+        double LM_Pos_x = LM_pos.getWidth();
+        double LM_Pos_y = LM_pos.getHeight();
 
-        l2.setStartX(LM_pos+2.5);
-        l2.setStartY(LM_pos+2.5);
-        l2.setEndX(LM_pos+5);
-        l2.setEndY(LM_pos+2.5);        
+        l1.setStartX(LM_Pos_x+2.5);
+        l1.setStartY(LM_Pos_y);
+        l1.setEndX(LM_Pos_x+2.5);
+        l1.setEndY(LM_Pos_y+2.5);
+
+        l2.setStartX(LM_Pos_x+2.5);
+        l2.setStartY(LM_Pos_y+2.5);
+        l2.setEndX(LM_Pos_x+5);
+        l2.setEndY(LM_Pos_y+2.5);        
 
         g.getChildren().addAll(l1,l2);
 
         return g;
     }
 
-    private Group DrawOPThree(double LM_pos){
+    private Group DrawOPThree(Dimension LM_pos){
         Group g = new Group();
 
         Line l1 = new Line();
         Line l2 = new Line();
 
-        l1.setStartX(LM_pos+2.5);
-        l1.setStartY(LM_pos+2.5);
-        l1.setEndX(LM_pos+5);
-        l1.setEndY(LM_pos+2.5);
+        double LM_Pos_x = LM_pos.getWidth();
+        double LM_Pos_y = LM_pos.getHeight();
 
-        l2.setStartX(LM_pos+2.5);
-        l2.setStartY(LM_pos+2.5);
-        l2.setEndX(LM_pos+2.5);
-        l2.setEndY(LM_pos+5);        
+        l1.setStartX(LM_Pos_x+2.5);
+        l1.setStartY(LM_Pos_y+2.5);
+        l1.setEndX(LM_Pos_x+5);
+        l1.setEndY(LM_Pos_y+2.5);
+
+        l2.setStartX(LM_Pos_x+2.5);
+        l2.setStartY(LM_Pos_y+2.5);
+        l2.setEndX(LM_Pos_x+2.5);
+        l2.setEndY(LM_Pos_y+5);        
 
         g.getChildren().addAll(l1,l2);
 
         return g;
     }
 
-    private Group DrawOPNine(double LM_pos){
+    private Group DrawOPNine(Dimension LM_pos){
         Group g = new Group();
 
         Line l1 = new Line();
         Line l2 = new Line();
 
-        l1.setStartX(LM_pos);
-        l1.setStartY(LM_pos+2.5);
-        l1.setEndX(LM_pos+2.5);
-        l1.setEndY(LM_pos+2.5);
+        double LM_Pos_x = LM_pos.getWidth();
+        double LM_Pos_y = LM_pos.getHeight();
 
-        l2.setStartX(LM_pos+2.5);
-        l2.setStartY(LM_pos+2.5);
-        l2.setEndX(LM_pos+2.5);
-        l2.setEndY(LM_pos+5);        
+        l1.setStartX(LM_Pos_x);
+        l1.setStartY(LM_Pos_y+2.5);
+        l1.setEndX(LM_Pos_x+2.5);
+        l1.setEndY(LM_Pos_y+2.5);
+
+        l2.setStartX(LM_Pos_x+2.5);
+        l2.setStartY(LM_Pos_y+2.5);
+        l2.setEndX(LM_Pos_x+2.5);
+        l2.setEndY(LM_Pos_y+5);        
 
         g.getChildren().addAll(l1,l2);
 
         return g;
     }
 
-    public Group DrawXY(int num,double LM_pos){
+    private Group DrawX(Dimension LM_pos){
+        Group g = new Group();
+
+        Line l1 = new Line();
+        Line l2 = new Line();
+
+        double LM_Pos_x = LM_pos.getWidth();
+        double LM_Pos_y = LM_pos.getHeight();
+
+        l1.setStartX(LM_Pos_x+2.5);
+        l1.setStartY(LM_Pos_y);
+        l1.setEndX(LM_Pos_x+2.5);
+        l1.setEndY(LM_Pos_y+5);
+
+        l2.setStartX(LM_Pos_x);
+        l2.setStartY(LM_Pos_y+2.5);
+        l2.setEndX(LM_Pos_x+5);
+        l2.setEndY(LM_Pos_y+2.5);
+
+        g.getChildren().addAll(l1,l2);
+
+        return g;
+    }
+
+    private Group DrawLongHorizontal(Dimension LM_pos){
+        Group g = new Group();
+
+        Line l1 = new Line();
+
+        double LM_Pos_x = LM_pos.getWidth();
+        double LM_Pos_y = LM_pos.getHeight();
+
+        l1.setStartX(LM_Pos_x+2.5);
+        l1.setStartY(LM_Pos_y-10);
+        l1.setEndX(LM_Pos_x+2.5);
+        l1.setEndY(LM_Pos_y+15);
+
+        g.getChildren().add(l1);
+
+        return g;
+    }
+
+    private Group DrawLongVertical(Dimension LM_pos){
+        Group g = new Group();
+
+        Line l1 = new Line();
+
+        double LM_Pos_x = LM_pos.getWidth();
+        double LM_Pos_y = LM_pos.getHeight();
+
+        l1.setStartX(LM_Pos_x-10);
+        l1.setStartY(LM_Pos_y+2.5);
+        l1.setEndX(LM_Pos_x+15);
+        l1.setEndY(LM_Pos_y+2.5);
+
+        g.getChildren().add(l1);
+
+        return g;
+    }
+
+    private Group DrawArrowDown(Dimension LM_pos){
+        Group g = new Group();
+
+        Line l1 = new Line();
+        Line l2 = new Line();
+        Line l3 = new Line();
+
+        double LM_Pos_x = LM_pos.getWidth();
+        double LM_Pos_y = LM_pos.getHeight();
+
+        l1.setStartX(LM_Pos_x-5);
+        l1.setStartY(LM_Pos_y-5);
+        l1.setEndX(LM_Pos_x+10);
+        l1.setEndY(LM_Pos_y-5);
+
+        l2.setStartX(LM_Pos_x-5);
+        l2.setStartY(LM_Pos_y-5);
+        l2.setEndX(LM_Pos_x+2.5);
+        l2.setEndY(LM_Pos_y+10);
+
+        l3.setStartX(LM_Pos_x+2.5);
+        l3.setStartY(LM_Pos_y+10);
+        l3.setEndX(LM_Pos_x+10);
+        l3.setEndY(LM_Pos_y-5);
+
+        g.getChildren().addAll(l1,l2,l3);
+
+        return g;
+    }
+
+    private Group DrawArrowLeft(Dimension LM_pos){
+        Group g = new Group();
+
+        Line l1 = new Line();
+        Line l2 = new Line();
+        Line l3 = new Line();
+
+        double LM_Pos_x = LM_pos.getWidth();
+        double LM_Pos_y = LM_pos.getHeight();
+
+        l1.setStartX(LM_Pos_x+10);
+        l1.setStartY(LM_Pos_y-5);
+        l1.setEndX(LM_Pos_x-5);
+        l1.setEndY(LM_Pos_y+2.5);
+
+        l2.setStartX(LM_Pos_x-5);
+        l2.setStartY(LM_Pos_y+2.5);
+        l2.setEndX(LM_Pos_x+10);
+        l2.setEndY(LM_Pos_y+10);
+
+        l3.setStartX(LM_Pos_x+10);
+        l3.setStartY(LM_Pos_y-5);
+        l3.setEndX(LM_Pos_x+10);
+        l3.setEndY(LM_Pos_y+10);
+
+        g.getChildren().addAll(l1,l2,l3);
+
+        return g;
+    }
+
+    private Group DrawArrowRigth(Dimension LM_pos){
+        Group g = new Group();
+
+        Line l1 = new Line();
+        Line l2 = new Line();
+        Line l3 = new Line();
+
+        double LM_Pos_x = LM_pos.getWidth();
+        double LM_Pos_y = LM_pos.getHeight();
+
+        l1.setStartX(LM_Pos_x-5);
+        l1.setStartY(LM_Pos_y-5);
+        l1.setEndX(LM_Pos_x-5);
+        l1.setEndY(LM_Pos_y+10);
+
+        l2.setStartX(LM_Pos_x-5);
+        l2.setStartY(LM_Pos_y-5);
+        l2.setEndX(LM_Pos_x+10);
+        l2.setEndY(LM_Pos_y+2.5);
+
+        l3.setStartX(LM_Pos_x+10);
+        l3.setStartY(LM_Pos_y+2.5);
+        l3.setEndX(LM_Pos_x-5);
+        l3.setEndY(LM_Pos_y+10);
+
+        g.getChildren().addAll(l1,l2,l3);
+
+        return g;
+    }
+
+    private Group DrawArrowUp(Dimension LM_pos){
+        Group g = new Group();
+
+        Line l1 = new Line();
+        Line l2 = new Line();
+        Line l3 = new Line();
+
+        double LM_Pos_x = LM_pos.getWidth();
+        double LM_Pos_y = LM_pos.getHeight();
+
+        l1.setStartX(LM_Pos_x-5);
+        l1.setStartY(LM_Pos_y+10);
+        l1.setEndX(LM_Pos_x+10);
+        l1.setEndY(LM_Pos_y+10);
+
+        l2.setStartX(LM_Pos_x+2.5);
+        l2.setStartY(LM_Pos_y-5);
+        l2.setEndX(LM_Pos_x-5);
+        l2.setEndY(LM_Pos_y+10);
+
+        l3.setStartX(LM_Pos_x+2.5);
+        l3.setStartY(LM_Pos_y-5);
+        l3.setEndX(LM_Pos_x+10);
+        l3.setEndY(LM_Pos_y+10);
+
+        g.getChildren().addAll(l1,l2,l3);
+
+        return g;
+    }
+
+    public Group DrawXY(int num,Dimension LM_pos){
         switch (num) {
             case -2:
-                return DrawVertical(LM_pos);
-                break;
+                return DrawHorizontal(LM_pos);
 
             case -3:
-                return DrawHorizontal(LM_pos);
-                break;
+                return DrawVertical(LM_pos);
 
             case -4:
-                return DrawNine(LM_pos);
-                break;
+                return DrawThree(LM_pos);
 
             case -5:
-                return DrawThree(LM_pos);
-                break;
+                return DrawOPThree(LM_pos);
 
             case -6:
-                return DrawOPThree(LM_pos);
-                break;
+                return DrawOPNine(LM_pos);
             
             case -7:
-                return DrawOPNine(LM_pos);
-                break;
+                return DrawNine(LM_pos);
         
+            case -8:
+                return DrawX(LM_pos);
+
+            case -9:
+                return DrawLongVertical(LM_pos);
+            
+            case -10:
+                return DrawLongHorizontal(LM_pos);
+
+            case -11:
+                return DrawArrowDown(LM_pos);
+
+            case -12:
+                return DrawArrowUp(LM_pos);
+
+            case -13:
+                return DrawArrowLeft(LM_pos);
+
+            case -14:
+                return DrawArrowRigth(LM_pos);
+
             default:
-                break;
+                return DrawX(LM_pos);
         }
     }
 

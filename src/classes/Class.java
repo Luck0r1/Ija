@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.lang.model.element.Element;
 
+
+import java.awt.Dimension;
 import classes.CD_Element;
 
 public class Class{
@@ -16,6 +18,11 @@ public class Class{
     private List<CD_Element> functiona;
     private String name;
 
+    private List<Dimension> top;
+    private List<Dimension> bottom;
+    private List<Dimension> left;
+    private List<Dimension> rigth;
+
     private int x;
     private int y;
 
@@ -23,6 +30,54 @@ public class Class{
         this.name = name;
         this.elements = new ArrayList<CD_Element>();
         this.functiona = new ArrayList<CD_Element>();
+    }
+
+    public void RefillConnectors(){
+        this.top = new ArrayList<Dimension>();
+        this.bottom = new ArrayList<Dimension>();
+        this.left = new ArrayList<Dimension>();
+        this.rigth = new ArrayList<Dimension>();
+
+        int xb = this.GetPosX()+2;
+        int yb = this.GetPosY()-3;
+        while (xb < this.GetPosX() + this.GetGraphicWidth()/5){
+            this.top.add(new Dimension(xb,yb));
+            xb+=5;
+        }
+
+        xb = this.GetPosX()+2;
+        yb = this.GetPosY() + GetGraphicHeigth()/5 + 2;
+        while (xb < this.GetPosX() + this.GetGraphicWidth()/5){
+            this.bottom.add(new Dimension(xb,yb));
+            xb+=5;
+        }
+
+        xb = this.GetPosX()-3;
+        yb = this.GetPosY()+2;
+        while (yb < this.GetPosY() + this.GetGraphicHeigth()/5){
+            this.left.add(new Dimension(xb,yb));
+            yb +=5;
+        }
+
+        xb = this.GetPosX()+GetGraphicWidth()/5+2;
+        yb = this.GetPosY()+2;
+        while (yb < this.GetPosY() + this.GetGraphicHeigth()/5){
+            this.rigth.add(new Dimension(xb,yb));
+            yb +=5;
+        }
+    }
+
+    public List<Dimension> GetConTop(){
+        return this.top;
+    }
+    public List<Dimension> GetConBot(){
+        return this.bottom;
+    }
+    public List<Dimension> GetConLef(){
+        return this.left;
+    }
+    public List<Dimension> GetConRig(){
+        return this.rigth;
     }
 
     public void SetPos(int x, int y){

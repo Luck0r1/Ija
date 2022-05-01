@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
+import java.awt.Dimension;
 import java.util.*;
 
 import javax.swing.ButtonGroup;
@@ -39,49 +40,46 @@ public class BindController implements EventHandler<ActionEvent>{
 
     public ClassDiagram editedCD;
 
-    public BindController( double strX,double strY, double endX, double endY,Side f,Bind tar,MainC main,ClassDiagram eC){
+    public BindController( Bind tar,MainC main,ClassDiagram eC){
         this.curB = tar;
         this.editedCD = eC;
-        this.drawnBind = this.GetLine(strX,strY,endX,endY,f,tar);
+        this.drawnBind = this.GetLine(tar,main);
         this.main = main;
     }
 
-    private Group GetLine(double strX,double strY, double endX, double endY,Side f,Bind tar){
+    private Group GetLine(Bind tar,MainC maii){
         Group returner = new Group();
 
-        Line ln = new Line(strX,strY,endX,endY);
+        LineDrawer drawer = new LineDrawer();
 
         Button renamer = new Button(tar.GetName());
-        renamer.setLayoutX((strX+endX)/2+5);
-        renamer.setLayoutY((strY+endY)/2+5);
-        renamer.setOnAction(this);
-        this.renameClass = renamer; 
 
-        if(f==Side.TOP || f==Side.BOTTOM){
-            Button side1 = new Button(tar.Get_C1());
-            Button side2 = new Button(tar.Get_C2());
-            side1.setLayoutX(strX +15);
-            side1.setLayoutY(strY);
-            side2.setLayoutX(endX+15);
-            side2.setLayoutY(endY);
-            side1.setOnAction(this); 
-            side2.setOnAction(this);
-            this.c1 = side1;
-            this.c2 = side2;
-            returner.getChildren().addAll(ln,side1,side2,renamer);
-        }else{
-            Button side1 = new Button(tar.Get_C1());
-            Button side2 = new Button(tar.Get_C2());
-            side1.setLayoutX(strX);
-            side1.setLayoutY(strY+15);
-            side2.setLayoutX(endX);
-            side2.setLayoutY(endY+15);
-            side1.setOnAction(this); 
-            side2.setOnAction(this);
-            this.c1 = side1;
-            this.c2 = side2;
-            returner.getChildren().addAll(ln,side1,side2,renamer);
+        List<Dimension> partsList = tar.GetDims();
+        Dimension midPos = partsList.get((partsList.size()-2)/2);
+
+        renamer.setLayoutX(Converts.ToWorldCoordinatesX((int)midPos.getWidth())-10);
+        renamer.setLayoutY(Converts.ToWorldCoordinatesY((int)midPos.getHeight())-25);
+        renamer.setOnAction(this);
+        this.renameClass = renamer;
+        
+        Button side1 = new Button(tar.Get_C1());
+        Button side2 = new Button(tar.Get_C2());
+        side1.setLayoutX(Converts.ToWorldCoordinatesX((int)partsList.get(0).getWidth())-10);
+        side1.setLayoutY(Converts.ToWorldCoordinatesY((int)partsList.get(0).getHeight())-10);
+        side2.setLayoutX(Converts.ToWorldCoordinatesX((int)partsList.get(1).getWidth())-10);
+        side2.setLayoutY(Converts.ToWorldCoordinatesY((int)partsList.get(1).getHeight())-10);
+        side1.setOnAction(this); 
+        side2.setOnAction(this);
+        this.c1 = side1;
+        this.c2 = side2;    
+
+        for(Dimension d : partsList){
+            Dimension sender = new Dimension((int)Converts.ToWorldCoordinatesX((int)d.getWidth()),(int)Converts.ToWorldCoordinatesY((int)d.getHeight()));
+            Group g = drawer.DrawXY(maii.mapper.GetVal((int)d.getWidth(),(int)d.getHeight()), sender);
+            returner.getChildren().add(g);
         }
+
+        returner.getChildren().addAll(side1,side2,renamer);
 
         return returner;
     }
