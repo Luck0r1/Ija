@@ -7,14 +7,17 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 
-
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
+import javafx.stage.Stage;
 import javafx.scene.layout.Pane;
 import java.util.*;
+import javafx.scene.Scene;
 
 import javax.swing.plaf.metal.MetalBorders.ScrollPaneBorder;
 
@@ -29,19 +32,23 @@ public class SQ_ClassPopper implements EventHandler<ActionEvent>{
 
     private Stage secondaryStage;
 
-    private SequenceDia sq;
+    private SequenceDiaInterface sq;
+    private ClassDiagram cd;
 
-    public SQ_ClassPopper(ClassDiagram cd,SequenceDia resPonder){
+    public SQ_ClassPopper(ClassDiagram cd,SequenceDiaInterface resPonder){
         this.buttons=new ArrayList<Button>();
         this.sq=resPonder;
+        this.cd = cd;
 
         VBox content = this.Chooser(cd);
         ScrollPane pane = new ScrollPane();
         pane.setPrefWidth(200);
         pane.setPrefHeight(5*30);
+        pane.setContent(content);
         
         this.secondaryStage = new Stage();
-        this.secondaryStage.setScene(pane);
+        Scene layout = new Scene(pane);
+        this.secondaryStage.setScene(layout);
         this.secondaryStage.setAlwaysOnTop(true);
         this.secondaryStage.show();
     }
@@ -69,7 +76,8 @@ public class SQ_ClassPopper implements EventHandler<ActionEvent>{
         int i=0;
         for(Button b : this.buttons){
             if(event.getSource()==b){
-                this.resPonder.AddActor(this.cd.GetClasses().get(i));
+                this.secondaryStage.close();
+                this.sq.AddActor(this.cd.GetClasses().get(i));
                 break;
             }
             i++;

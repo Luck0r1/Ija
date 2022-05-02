@@ -83,6 +83,8 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
     Button b_debug;
     boolean in_debug=false;
 
+    private SequenceDiaInterface sqi;
+
     public Mapper mapper;
 
     int dimX=1920;
@@ -156,6 +158,10 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         addNewDiagram.setPrefWidth(300);
         v.getChildren().add(addNewDiagram);
 
+        this.sb_loadDia = new ArrayList<Button>();
+        this.sb_removeDia = new ArrayList<Button>();
+        this.sb_renameDia = new ArrayList<Button>();
+
         for(SequenceDia sd : this.curClass.GetSeqD()){
             
             HBox oneSd = new HBox();
@@ -172,9 +178,9 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
             this.sb_removeDia.add(deleteDia);
             this.sb_renameDia.add(renameDia);
 
-            loadDia.setPrefWidth(200);
-            renameDia.setPrefWidth(50);
-            deleteDia.setPrefWidth(50);
+            loadDia.setPrefWidth(150);
+            renameDia.setPrefWidth(75);
+            deleteDia.setPrefWidth(75);
 
             oneSd.getChildren().addAll(loadDia,renameDia,deleteDia);
             v.getChildren().add(oneSd);
@@ -316,6 +322,20 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         this.primaryStage.setScene(newScene);
     }
 
+    public void SequenceRefresh(SequenceDia sq){
+        Group layout = this.sqi.GetDrawn();
+        Scene newScene = new Scene(layout);
+        this.primaryStage.setScene(newScene);
+
+        this.primaryStage.setMaximized(true);
+        this.primaryStage.show();
+    }
+
+    public void SequenceLoad(SequenceDia sq){
+        this.sqi = new SequenceDiaInterface(this,this.curClass,sq, this.dimX, this.dimY);
+        this.SequenceRefresh(sq);
+    }
+
     public void SmallRefresh(){
         Scene newScene = this.UpdateFList();
         this.primaryStage.setScene(newScene);
@@ -431,25 +451,27 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
                 return;
             }
             else if(event.getSource()==this.sb_addDia){
-
+                this.curClass.SequenceDia_Add("New Sequence dia");
+                this.Refresh();
                 return;
             }
 
             for(int i=0;i<this.sb_loadDia.size();i++){
                 if(event.getSource()==this.sb_loadDia.get(i)){
-
+                    this.SequenceLoad(this.curClass.GetSeqD().get(i));
                     return;
                 }
             }
             for(int i=0;i<this.sb_renameDia.size();i++){
                 if(event.getSource()==this.sb_renameDia.get(i)){
-
+                    
                     return;
                 }
             }
             for(int i=0;i<this.sb_removeDia.size();i++){
                 if(event.getSource()==this.sb_removeDia.get(i)){
-
+                    this.curClass.SequenceDia_Remove(this.curClass.GetSeqD().get(i));
+                    this.Refresh();
                     return;
                 }
             }
