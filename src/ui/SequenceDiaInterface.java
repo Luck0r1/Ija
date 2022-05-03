@@ -40,7 +40,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.shape.Line;
 import javafx.geometry.Pos;
-
+import javafx.scene.input.MouseEvent;
 import javafx.scene.Group; 
 
 public class SequenceDiaInterface implements EventHandler<ActionEvent>{
@@ -55,6 +55,7 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
     private List<Button> remove_butts;
     private List<Button> switch_butts;
     private List<Button> sendMesbutts;
+    List<Pane> highlighPanes;
  
     public SequenceDiaInterface(MainC responder,ClassDiagram cd,SequenceDia seq,int dimX,int dimY){
         this.sq = seq;
@@ -129,8 +130,8 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         Pane bckg = new Pane();
         bckg.setPrefWidth(slotWidth-40);
         bckg.setPrefHeight(headerHeigth);
-        bckg.setLayoutX(collumn*slotWidth+20);
-        bckg.setLayoutY(40);
+        bckg.setLayoutX(20);
+        bckg.setLayoutY(20);
         bckg.setStyle("-fx-border-style: solid inside;"
         + "-fx-border-width: 2;"
         + "-fx-border-color: blue;"
@@ -185,6 +186,9 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         this.remove_butts = new ArrayList<Button>();
         this.switch_butts = new ArrayList<Button>();
         this.sendMesbutts = new ArrayList<Button>();
+        this.highlighPanes = new ArrayList<Pane>();
+
+        Group g = new Group();
 
         HBox topmenu=new HBox();
         topmenu.setPrefHeight(30);
@@ -193,6 +197,7 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         b.setOnAction(this);
         b.setPrefHeight(30);
         topmenu.getChildren().add(b);
+        this.b_return = b;
 
         ScrollPane mainScreen = new ScrollPane();
         mainScreen.setPrefWidth(this.dimX);
@@ -210,37 +215,38 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         int width = cast.size() * actorWidth;
         int heigth = messages.size() * messageHeigth-headerHeigth;
 
-        Pane header = new Pane();
         Pane body = new Pane();
-        
-        int col=1;
-        Pane user = GetHead("user", headerHeigth, actorWidth, 0);
-        for(Actor a : cast){
-            Pane addon = GetHead(a.GetName(), headerHeigth, actorWidth, col);
-            mainSDummy.getChildren().add(addon);
-            col++;
 
-        }
-        Pane newee = GetHead("", headerHeigth, actorWidth, col);
-        mainSDummy.getChildren().addAll(user,newee);
-        for(int i = -1; i<this.sq.GetMessages().size();i++){
+        for(int i = -1; i<=cast.size();i++){
             
-            for(int j = -1; j< cast.size();j+=1){
-                Group g;
-                if(j==-1){
-                    g = GenerateActive(true);
-                }else{
-                    if(cast.get(j).IsEternal()){
-                        g=GenerateActive(true);
+            Pane bckg = new Pane();
+            bckg.setPrefWidth(actorWidth);
+            bckg.setPrefHeight(1050);
+            bckg.setLayoutX((i+1)*actorWidth);
+            Pane header;
+            if(i==-1) header = GetHead("user", headerHeigth, actorWidth, i+1);
+            else if(i==cast.size())header = GetHead("", headerHeigth, actorWidth, i+1);
+            else header = GetHead(cast.get(i).GetName(), headerHeigth, actorWidth, i+1);
+            bckg.getChildren().add(header);
+            if(i!=cast.size()){
+                for(int j=-1;j<messages.size();j++){
+                    Group g1;
+                    if(i==-1){
+                        g1 = GenerateActive(true);
                     }else{
-                        g=GenerateInActive();
+                        if(cast.get(i).IsEternal()){
+                            g1=GenerateActive(true);
+                        }else{
+                            g1=GenerateInActive();
+                        }
                     }
+                    g1.setLayoutX(actorWidth/2 -2.5);
+                    g1.setLayoutY((j+1)*20+headerHeigth+20);
+                    bckg.getChildren().add(g1);
                 }
-                g.setLayoutX((j+1)*actorWidth + actorWidth/2 -2.5);
-                g.setLayoutY((i+1)*20+headerHeigth+40);
-                mainSDummy.getChildren().add(g);
-
             }
+            this.highlighPanes.add(bckg);
+            mainSDummy.getChildren().add(bckg);
         }
 
         for(int i = -1;i<cast.size();i++){
@@ -249,8 +255,56 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
             bt.setOnAction(this);
             bt.setPrefWidth(20);
             bt.setLayoutX((i+1)*actorWidth + actorWidth/2 - 15);
-            bt.setLayoutY((this.sq.GetMessages().size()+1)*20+headerHeigth+40);
+            bt.setLayoutY((this.sq.GetMessages().size()+1)*20+headerHeigth+20);
             
+            Line drawer = new Line();
+            int helper = i;
+
+            bt.setOnMousePressed(new EventHandler<MouseEvent>(){
+                @Override public void handle(MouseEvent mouseEvent) {
+                    g.getChildren().add(drawer);
+                    drawer.setStartX(mouseEvent.getSceneX());
+                    drawer.setStartY(mouseEvent.getSceneY());
+                    drawer.setEndX(mouseEvent.getSceneX());
+                    drawer.setEndY(mouseEvent.getSceneY());
+                }
+            });
+
+            bt.setOnMouseDragged(new EventHandler<MouseEvent>(){
+                @Override public void handle(MouseEvent mouseEvent) {
+                    drawer.setEndX(mouseEvent.getSceneX());
+                    drawer.setEndY(mouseEvent.getSceneY());
+                    for(int k = 0; k<=cast.size();k++){
+                        if(k!=(helper+1) && mouseEvent.getSceneX()>=k*actorWidth+20 && mouseEvent.getSceneX()<=k*actorWidth-20+actorWidth){
+                            highlighPanes.get(k).setStyle("-fx-background-color: dbdbdb;");
+                        }else{
+                            highlighPanes.get(k).setStyle("-fx-background-color: none;");
+                        }
+                    }
+                }
+            });
+
+            SequenceDiaInterface h2 = this;
+
+            bt.setOnMouseReleased(new EventHandler<MouseEvent>(){
+                @Override public void handle(MouseEvent mouseEvent) {
+                    for(int k = 0; k<=cast.size();k++){
+                        if(k!=(helper+1) && mouseEvent.getSceneX()>=k*actorWidth+20 && mouseEvent.getSceneX()<=k*actorWidth-20+actorWidth){
+                            Actor source;
+                            Actor target;
+                            if(helper==-1)source=null;
+                            else source = cast.get(helper);
+                            if(k==0)target=null;
+                            else target = cast.get(k-1);
+                            SQ_FuncPopper popperMaster = new SQ_FuncPopper(sq,source,target,h2);
+                        }
+                    }
+                    g.getChildren().remove(drawer);
+                    responder.SequenceRefresh(sq);
+                }
+            });
+
+
             mainSDummy.getChildren().add(bt);
         }
 
@@ -258,7 +312,6 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
 
 
         mainScreen.setContent(mainSDummy);
-        Group g = new Group();
         g.getChildren().addAll(mainScreen,topmenu);
         this.gui = g;
     }
@@ -270,6 +323,10 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
 
     public void AddActor(classes.Class c){
         this.sq.AddActor(c);
+        this.Refresh();
+    }
+
+    public void Refresh(){
         this.DrawInterface();
         this.responder.SequenceRefresh(sq);
     }

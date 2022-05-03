@@ -25,8 +25,9 @@ public class SequenceDia{
         return this.name;
     }
 
-    public void AddMessage(){
-
+    public void AddMessage(boolean response,CD_Element func,Actor source,Actor target){
+        Message messOfALetter = new Message(response, func, source, target);
+        this.loveLetters.add(messOfALetter);
     }
 
     public void RemoveMessage(Message m){
