@@ -242,13 +242,14 @@ public class FileHandler{
                     toAdd.ReId();
                 }
                 for(int j =0;j<msList.getLength();j++){
-                    Boolean response = (Integer.parseInt(msList.item(j).getAttributes().item(3).getNodeValue())==1);
+                    Boolean response = (Integer.parseInt(msList.item(j).getAttributes().item(4).getNodeValue())==1);
                     int a1n = Integer.parseInt(msList.item(j).getAttributes().item(0).getNodeValue());
                     int a2n = Integer.parseInt(msList.item(j).getAttributes().item(1).getNodeValue());
-                    int fn = Integer.parseInt(msList.item(j).getAttributes().item(2).getNodeValue());
-                    Boolean constructor = (Integer.parseInt(msList.item(j).getAttributes().item(4).getNodeValue())==1);
+                    int fn = Integer.parseInt(msList.item(j).getAttributes().item(3).getNodeValue());
+                    Boolean mc = (Integer.parseInt(msList.item(j).getAttributes().item(2).getNodeValue())==1);
                     String text = msList.item(j).getAttributes().item(5).getNodeValue();
                     CD_Element func;
+                    System.out.print(mc);
                     Actor a1;
                     Actor a2;
                     if(a1n==-1)a1=null;
@@ -257,7 +258,7 @@ public class FileHandler{
                     else a2=toAdd.GetCast().get(a2n);
                     if(fn==-1)func=null;
                     else func = toLoad.Element_Get_By_Id(fn);
-                    toAdd.AddMessage(response, func, a1, a2,constructor,text);
+                    toAdd.AddMessage(response, func, a1, a2,mc,text);
                 }
                 toLoad.SequenceDia_FAdd(toAdd);
             }

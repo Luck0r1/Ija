@@ -277,7 +277,7 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
                 if(cast.get(i).IsEternal())
                     off=0;
                 else
-                    off=(this.sq.GetFirstAppearance(cast.get(i))+1)*this.heightDistance+20;
+                    off=(this.sq.GetFirstAppearance(cast.get(i))+1)*this.heightDistance;
                 header = GetHead(cast.get(i).GetName(), headerHeigth, actorWidth, i+1,off);
             }
             bckg.getChildren().add(header);
@@ -295,11 +295,15 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
                 List<Message> connection = this.sq.FindAssociatedMessages(a);
                 boolean ac = false;
                 int iter;
-                if(a!=null && a.IsEternal()==false)
+                int los;
+                if(a!=null && a.IsEternal()==false){
+                    los=0;
                     iter=this.sq.GetFirstAppearance(cast.get(i))+1;
-                else
+                }else{
+                    los=-1;
                     iter = -1;
-                for(int j=iter;j<messages.size();j++){
+                }
+                for(int j=iter;j<messages.size()+los;j++){
                     Group g1;
                     if(i==-1){
                         g1 = GenerateChunk(ChunkType.FULL);
@@ -308,11 +312,12 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
                         if(a.IsEternal()){
                             g1 =GenerateChunk(ChunkType.FULL);
                         }else{
-                            boolean hasMess;
-                            if(j==-1)hasMess=false;
-                            else hasMess = connection.contains(messages.get(j));
+                            boolean hasMess = connection.contains(messages.get(j));
                             if(hasMess){
-                                if(ac == false){
+                                if(messages.get(j).IsConstructor() && messages.get(j).GetA1()==a){
+                                    g1=GenerateChunk(ChunkType.FULL);
+                                }
+                                else if(ac == false){
                                     g1 = GenerateChunk(ChunkType.BEGIN);
                                     ac=!ac;
                                 }else{
@@ -330,7 +335,11 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
 
                     }
                     g1.setLayoutX(actorWidth/2 -2.5);
-                    g1.setLayoutY((j+1)*this.heightDistance+headerHeigth+this.heightDistance);
+                    int yPos = (j+1)*this.heightDistance+headerHeigth;
+                    if(a==null || a.IsEternal())
+                        g1.setLayoutY(yPos+this.heightDistance);
+                    else
+                    g1.setLayoutY(yPos);
                     bckg.getChildren().add(g1);
                 }
             }
@@ -344,7 +353,7 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
             bt.setOnAction(this);
             bt.setPrefWidth(20);
             bt.setLayoutX((i+1)*actorWidth + actorWidth/2 - 15);
-            bt.setLayoutY((this.sq.GetMessages().size()+2)*this.heightDistance+headerHeigth);
+            bt.setLayoutY((this.sq.GetMessages().size()+1)*this.heightDistance+headerHeigth);
             
             Line drawer = new Line();
             int helper = i;
