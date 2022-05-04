@@ -26,8 +26,11 @@ public class Class{
     private int x;
     private int y;
 
-    public Class(String name){
+    private ClassDiagram cd;
+
+    public Class(String name,ClassDiagram cd){
         this.name = name;
+        this.cd = cd;
         this.elements = new ArrayList<CD_Element>();
         this.functiona = new ArrayList<CD_Element>();
     }
@@ -140,10 +143,12 @@ public class Class{
 
     public void remElement(CD_Element toRem){
         this.elements.remove(toRem);
+        this.cd.ReId();
     }
 
     public void remFunction(CD_Element toRem){
         this.functiona.remove(toRem);
+        this.cd.ReId();
     }
 
     public void reNameElement(String old,String newN){

@@ -23,6 +23,10 @@ public class Actor{
         this.id=newId;
     }
 
+    public int GetId(){
+        return this.id;
+    }
+
     /**
      * Does not every great artist strive to carve his name among th stars for all eternity?
      */
@@ -36,5 +40,6 @@ public class Actor{
     public boolean IsEternal(){
         return this.eternal;
     }
+
 
 }

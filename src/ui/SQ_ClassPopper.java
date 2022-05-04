@@ -34,11 +34,13 @@ public class SQ_ClassPopper implements EventHandler<ActionEvent>{
 
     private SequenceDiaInterface sq;
     private ClassDiagram cd;
+    private boolean makeEternal;
 
-    public SQ_ClassPopper(ClassDiagram cd,SequenceDiaInterface resPonder){
+    public SQ_ClassPopper(ClassDiagram cd,SequenceDiaInterface resPonder,boolean eternal){
         this.buttons=new ArrayList<Button>();
         this.sq=resPonder;
         this.cd = cd;
+        this.makeEternal = eternal;
 
         VBox content = this.Chooser(cd);
         ScrollPane pane = new ScrollPane();
@@ -77,7 +79,7 @@ public class SQ_ClassPopper implements EventHandler<ActionEvent>{
         for(Button b : this.buttons){
             if(event.getSource()==b){
                 this.secondaryStage.close();
-                this.sq.AddActor(this.cd.GetClasses().get(i));
+                this.sq.AddActor(this.cd.GetClasses().get(i),this.makeEternal);
                 break;
             }
             i++;

@@ -5,6 +5,8 @@ import support.AccesT;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+
+import javax.sound.midi.Sequence;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -54,6 +56,7 @@ public class FileHandler{
         //Check if file exists ask for overwrite
         if(true){
             try {
+                
                 DocumentBuilderFactory documentFac = DocumentBuilderFactory.newInstance();
                 DocumentBuilder docBuilder = documentFac.newDocumentBuilder();
                 Document doc = docBuilder.newDocument();
@@ -65,6 +68,8 @@ public class FileHandler{
                 root.appendChild(classes);
                 Element binds = doc.createElement("Binds");
                 root.appendChild(binds);
+                Element sequenceDias = doc.createElement("seqDia");
+                root.appendChild(sequenceDias);
 
                 for (Class n_class : curClass.GetClasses()) {
                     Element add_class = doc.createElement(n_class.GetName());
@@ -104,6 +109,43 @@ public class FileHandler{
                     binds.appendChild(add_bind);
                 }
 
+                for (SequenceDia sq : curClass.GetSeqD()){
+                    sq.ReId();
+                    //System.out.print(sq.GetName());
+                    Element add_sequence_dia = doc.createElement(sq.GetName());
+
+                    Element cast = doc.createElement("cast");
+                    for (Actor a : sq.GetCast()){
+
+                        Element actor = doc.createElement(a.GetClass().GetName());
+                        String s;
+                        if(a.IsEternal())s="1";
+                        else s="0";
+                        actor.setAttribute("eternal",s);
+                        actor.setAttribute("id", Integer.toString(a.GetClass().GetId()));
+                        cast.appendChild(actor);
+
+                    }
+                    add_sequence_dia.appendChild(cast);
+
+                    Element loveLetters = doc.createElement("messages");
+                    for(Message m : sq.GetMessages()){
+                        Element message = doc.createElement(m.GetName());
+                        String s;
+                        if(m.GetResponse())s="1";
+                        else s="0";
+                        message.setAttribute("response", s);
+                        message.setAttribute("func", Integer.toString(m.GetFuncId()));
+                        message.setAttribute("a1", Integer.toString(sq.GetCast().indexOf(m.GetA1())));
+                        message.setAttribute("a2", Integer.toString(sq.GetCast().indexOf(m.GetA2())));
+                        
+                        loveLetters.appendChild(message);
+                    }
+                    add_sequence_dia.appendChild(loveLetters);
+
+                    sequenceDias.appendChild(add_sequence_dia);
+                }
+
                 TransformerFactory transformerFactory = TransformerFactory.newInstance();
                 Transformer transformer = transformerFactory.newTransformer();
                 //transformer.setOutputProperty(OutputKeys.INDENT,"yes");
@@ -136,7 +178,7 @@ public class FileHandler{
 
             NodeList clssList = doc.getDocumentElement().getChildNodes().item(0).getChildNodes();
             NodeList bindList = doc.getDocumentElement().getChildNodes().item(1).getChildNodes();
-
+            NodeList seqDList = doc.getDocumentElement().getChildNodes().item(2).getChildNodes();
 
             for(int i=0; i<clssList.getLength();i++ ){
                 NodeList argList = clssList.item(i).getChildNodes().item(0).getChildNodes();
@@ -184,6 +226,34 @@ public class FileHandler{
                 toLoad.Bind_FAdd(adder);
                 
             }
+
+            for(int i=0;i<seqDList.getLength();i++){
+                SequenceDia toAdd = new SequenceDia(seqDList.item(i).getNodeName());
+                NodeList acList = seqDList.item(i).getChildNodes().item(0).getChildNodes();
+                NodeList msList = seqDList.item(i).getChildNodes().item(1).getChildNodes();
+                for(int j = 0;j<acList.getLength();j++){
+                    Boolean eternal = (Integer.parseInt(acList.item(j).getAttributes().item(0).getNodeValue())==1);
+                    toAdd.AddActor(toLoad.Class_Get_By_Id(Integer.parseInt(acList.item(j).getAttributes().item(1).getNodeValue())), eternal);
+                    toAdd.ReId();
+                }
+                for(int j =0;j<msList.getLength();j++){
+                    Boolean response = (Integer.parseInt(msList.item(j).getAttributes().item(3).getNodeValue())==1);
+                    int a1n = Integer.parseInt(msList.item(j).getAttributes().item(0).getNodeValue());
+                    int a2n = Integer.parseInt(msList.item(j).getAttributes().item(1).getNodeValue());
+                    int fn = Integer.parseInt(msList.item(j).getAttributes().item(2).getNodeValue());
+                    CD_Element func;
+                    Actor a1;
+                    Actor a2;
+                    if(a1n==-1)a1=null;
+                    else a1=toAdd.GetCast().get(a1n);
+                    if(a2n==-1)a2=null;
+                    else a2=toAdd.GetCast().get(a2n);
+                    if(fn==-1)func=null;
+                    else func = toLoad.Element_Get_By_Id(fn);
+                    toAdd.AddMessage(response, func, a1, a2);
+                }
+                toLoad.SequenceDia_FAdd(toAdd);
+            }
             
             return toLoad;
         } catch (Exception e) {
@@ -206,6 +276,8 @@ public class FileHandler{
                 root.appendChild(classes);
                 Element binds = doc.createElement("Binds");
                 root.appendChild(binds);
+                Element seqDias = doc.createElement("seqDia");
+                root.appendChild(seqDias);
 
                 TransformerFactory transformerFactory = TransformerFactory.newInstance();
                 Transformer transformer = transformerFactory.newTransformer();

@@ -3,7 +3,9 @@ package classes;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.w3c.dom.UserDataHandler;
+//import org.w3c.dom.UserDataHandler;
+import classes.*;
+
 
 public class SequenceDia{
     private String name;
@@ -34,16 +36,13 @@ public class SequenceDia{
         this.loveLetters.remove(m);
     }
 
-    public void AddActor(classes.Class toAdd){
+    public void AddActor(classes.Class toAdd,boolean eternal){
         Actor actor = new Actor(toAdd);
+        if(eternal)actor.SetEternal();
         this.cast.add(actor);
         this.ReId();
     }
 
-    public void RemoveActor(Actor a){
-        this.cast.remove(a);
-        this.ReId();
-    }
 
     public List<Actor> GetCast(){
         return this.cast;
@@ -67,5 +66,61 @@ public class SequenceDia{
                 a.reId(count.get(pos));
             }
         }
+    }
+
+    public List<Message> FindAssociatedMessages(Actor a){
+        List<Message> mList = new ArrayList<Message>();
+        for (Message m : this.loveLetters){
+            if(m.a1==a || m.a2==a)
+                mList.add(m);
+        } 
+        return mList;
+    }
+
+    public void RemoveActorByActor(Actor a){
+        List<Message> toRemove = new ArrayList<Message>();
+        for(Message m : this.loveLetters){
+            if(m.GetA1() == a || m.GetA2() == a)
+                toRemove.add(m);
+        }
+        for(Message m : toRemove)
+            this.loveLetters.remove(m);
+        
+        this.cast.remove(a);
+        this.ReId();
+    }
+
+    public void RemoveActorByClass(classes.Class c){
+        List<Actor> toRemove = new ArrayList<Actor>();
+        for(Actor a : this.cast){
+            if(a.GetClass()==c)
+                toRemove.add(a);
+
+        }
+        for(Actor a : toRemove)
+            this.RemoveActorByActor(a);
+        this.ReId();
+    }
+
+    public void RemoveMessageByMessage(Message m){
+        this.loveLetters.remove(m);
+    }
+
+    public void RemoveMessageByFunction(CD_Element c){
+        List<Message> toRemove = new ArrayList<Message>();
+        for(Message m : this.loveLetters){
+            if(m.function == c)
+                toRemove.add(m);
+        }
+        for(Message m : toRemove)
+            this.loveLetters.remove(m);
+    }
+
+    public Actor GetAcById(int i){
+        for(Actor a : this.cast){
+            if(a.GetId()==i)
+                return a;
+        }
+        return null;
     }
 }

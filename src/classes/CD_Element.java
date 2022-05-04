@@ -10,11 +10,19 @@ public class CD_Element{
     private AccesT acces;
     private boolean func = false;
     private String returnT="";
+    private int id;
 
     public CD_Element(String name){
         this.name=name;
         this.type="";
         this.acces=AccesT.PUBLIC;
+    }
+
+    public void SetId(int id){
+        this.id=id;
+    }
+    public int GetId(){
+        return this.id;
     }
 
     public String GetName(){

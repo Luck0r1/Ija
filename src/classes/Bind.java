@@ -72,5 +72,11 @@ public class Bind{
         this.dims = new ArrayList<Dimension>();
     }
 
+    public classes.Class GetClass1(){
+        return this.classes.get(0);
+    }
 
+    public classes.Class GetClass2(){
+        return this.classes.get(1);
+    }
 }

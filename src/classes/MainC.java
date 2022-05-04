@@ -451,7 +451,7 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
                 return;
             }
             else if(event.getSource()==this.sb_addDia){
-                this.curClass.SequenceDia_Add("New Sequence dia");
+                this.curClass.SequenceDia_Add("New_Sequence_dia");
                 this.Refresh();
                 return;
             }

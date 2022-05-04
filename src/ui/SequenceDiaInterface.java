@@ -53,7 +53,6 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
     private Button b_return;
     private Button add_Actor;
     private List<Button> remove_butts;
-    private List<Button> switch_butts;
     private List<Button> sendMesbutts;
     List<Pane> highlighPanes;
  
@@ -75,13 +74,14 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         return g;
     }
 
-    private Group GenerateActive(boolean constructed){
+    private Group GenerateActive(ChunkType type){
         Group g = new Group();
         Pane p = new Pane();
         p.setPrefWidth(5);
-        if(!constructed)
+        if(type == ChunkType.FULL)
             p.setPrefHeight(20);
-        else{
+        else
+        if(type == ChunkType.BEGIN){
             Line l = new Line();
             l.setStartX(2.5);
             l.setEndX(2.5);
@@ -89,6 +89,14 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
             g.getChildren().add(l);
             p.setPrefHeight(10);
             p.setLayoutY(10);
+        }else{
+            Line l = new Line();
+            l.setStartX(2.5);
+            l.setEndX(2.5);
+            l.setEndY(20);
+            l.setStartY(10);
+            g.getChildren().add(l);
+            p.setPrefHeight(10);
         }
         p.setStyle("-fx-border-style: solid inside;"
         + "-fx-border-width: 2;"
@@ -96,6 +104,14 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         + "-fx-background-color: grey;");
         g.getChildren().add(p);
         return g;
+    }
+
+    private Group GenerateChunk(ChunkType type){
+        if(type == ChunkType.EMPTY){
+            return GenerateInActive();
+        }else{
+            return GenerateActive(type);
+        }
     }
 
     private Group GenerateArrow(int startX,int startY,int endX,int endY, boolean dotted){
@@ -116,22 +132,24 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         if(dotted){
             l.getStrokeDashArray().addAll(25d, 20d, 5d, 20d);
         }
-        if(dir_reverse){
+        if(!dir_reverse){
             ul.setEndX(endX+10);
+            dl.setEndX(endX+10);
         }else{
             dl.setEndX(endX-10);
+            ul.setEndX(endX-10);
         }
         Group g = new Group();
         g.getChildren().addAll(l,ul,dl);
         return g;
     }
 
-    private Pane GetHead(String name,int headerHeigth,int slotWidth,int collumn){
+    private Pane GetHead(String name,int headerHeigth,int slotWidth,int collumn, int offSet){
         Pane bckg = new Pane();
         bckg.setPrefWidth(slotWidth-40);
         bckg.setPrefHeight(headerHeigth);
         bckg.setLayoutX(20);
-        bckg.setLayoutY(20);
+        bckg.setLayoutY(20 + offSet);
         bckg.setStyle("-fx-border-style: solid inside;"
         + "-fx-border-width: 2;"
         + "-fx-border-color: blue;"
@@ -165,26 +183,37 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
                 this.remove_butts.add(b);
                 b.setPrefHeight(25);
                 b.setPrefWidth((slotWidth-80)/2);
-                b.setLayoutX(20 + (slotWidth-80)/2);
+                b.setLayoutX(75);
                 b.setLayoutY(headerHeigth-35+5);
 
-                Button b2 = new Button("Eternal");
-                b2.setOnAction(this);
-                this.switch_butts.add(b2);
-                b2.setPrefHeight(25);
-                b2.setPrefWidth((slotWidth-80)/2);
-                b2.setLayoutX(20);
-                b2.setLayoutY(headerHeigth-35+5);
-
-                bckg.getChildren().addAll(b,b2);
+                bckg.getChildren().add(b);
             }
         }
         return bckg;
     }
 
+    private Group GetArrows(int headerHeigth,int actorWidth){
+        Group returner = new Group();
+        List<Message> msList = this.sq.GetMessages();
+        List<Actor> actors = this.sq.GetCast();
+
+        for (int i = 0;i<msList.size();i++){
+            int yCoord = (i+1)*20+headerHeigth+30;
+            Actor a1 = msList.get(i).GetA1();
+            Actor a2 = msList.get(i).GetA2();
+            int num1 = this.sq.GetCast().indexOf(a1)+1;
+            int num2 = this.sq.GetCast().indexOf(a2)+1;
+            int xBegin = (num1)*actorWidth + actorWidth/2;
+            int xEnd = (num2)*actorWidth + actorWidth / 2;
+            Group g = GenerateArrow(xBegin, yCoord, xEnd, yCoord, msList.get(i).GetResponse());
+            returner.getChildren().add(g);
+        }
+
+        return returner;
+    }
+
     private void DrawInterface(){
         this.remove_butts = new ArrayList<Button>();
-        this.switch_butts = new ArrayList<Button>();
         this.sendMesbutts = new ArrayList<Button>();
         this.highlighPanes = new ArrayList<Pane>();
 
@@ -224,21 +253,47 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
             bckg.setPrefHeight(1050);
             bckg.setLayoutX((i+1)*actorWidth);
             Pane header;
-            if(i==-1) header = GetHead("user", headerHeigth, actorWidth, i+1);
-            else if(i==cast.size())header = GetHead("", headerHeigth, actorWidth, i+1);
-            else header = GetHead(cast.get(i).GetName(), headerHeigth, actorWidth, i+1);
+            if(i==-1) header = GetHead("user", headerHeigth, actorWidth, i+1,0);
+            else if(i==cast.size())header = GetHead("", headerHeigth, actorWidth, i+1,0);
+            else header = GetHead(cast.get(i).GetName(), headerHeigth, actorWidth, i+1,0);
             bckg.getChildren().add(header);
             if(i!=cast.size()){
+
+                Actor a;
+                if(i==-1)a=null;
+                else a=cast.get(i);
+                List<Message> connection = this.sq.FindAssociatedMessages(a);
+                boolean ac = false;
+
                 for(int j=-1;j<messages.size();j++){
                     Group g1;
                     if(i==-1){
-                        g1 = GenerateActive(true);
+                        g1 = GenerateChunk(ChunkType.FULL);
                     }else{
-                        if(cast.get(i).IsEternal()){
-                            g1=GenerateActive(true);
+
+                        if(a.IsEternal()){
+                            g1 =GenerateChunk(ChunkType.FULL);
                         }else{
-                            g1=GenerateInActive();
+                            boolean hasMess;
+                            if(j==-1)hasMess=false;
+                            else hasMess = connection.contains(messages.get(j));
+                            if(hasMess){
+                                if(ac == false){
+                                    g1 = GenerateChunk(ChunkType.BEGIN);
+                                    ac=!ac;
+                                }else{
+                                    g1 = GenerateChunk(ChunkType.END);
+                                    ac=!ac;
+                                }
+                            }else{
+                                if(ac==false)
+                                    g1=GenerateChunk(ChunkType.EMPTY);
+                                else
+                                    g1=GenerateChunk(ChunkType.FULL);
+                            }
                         }
+
+
                     }
                     g1.setLayoutX(actorWidth/2 -2.5);
                     g1.setLayoutY((j+1)*20+headerHeigth+20);
@@ -274,7 +329,7 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
                 @Override public void handle(MouseEvent mouseEvent) {
                     drawer.setEndX(mouseEvent.getSceneX());
                     drawer.setEndY(mouseEvent.getSceneY());
-                    for(int k = 0; k<=cast.size();k++){
+                    for(int k = 0; k<=cast.size()+1;k++){
                         if(k!=(helper+1) && mouseEvent.getSceneX()>=k*actorWidth+20 && mouseEvent.getSceneX()<=k*actorWidth-20+actorWidth){
                             highlighPanes.get(k).setStyle("-fx-background-color: dbdbdb;");
                         }else{
@@ -308,8 +363,7 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
             mainSDummy.getChildren().add(bt);
         }
 
-
-
+        mainSDummy.getChildren().add(this.GetArrows(headerHeigth, actorWidth));
 
         mainScreen.setContent(mainSDummy);
         g.getChildren().addAll(mainScreen,topmenu);
@@ -321,8 +375,8 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         return this.gui;
     }
 
-    public void AddActor(classes.Class c){
-        this.sq.AddActor(c);
+    public void AddActor(classes.Class c,boolean eternal){
+        this.sq.AddActor(c,eternal);
         this.Refresh();
     }
 
@@ -337,22 +391,24 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
             this.responder.Refresh();
         }else
         if(event.getSource()==this.add_Actor){
-            SQ_ClassPopper sq = new SQ_ClassPopper(this.workingDia, this);
+            SQ_ClassPopper sq = new SQ_ClassPopper(this.workingDia, this,true);
         }else{
             int i = 0;
             for(Button b : this.remove_butts){
                 if(event.getSource()==b){
-
-                }
-                i++;
-            }
-            i=0;
-            for(Button b : this.switch_butts){
-                if(event.getSource()==b){
-                    this.sq.GetCast().get(i).SetEternal();
+                    this.sq.RemoveActorByActor(this.sq.GetCast().get(i));
+                    this.responder.SequenceRefresh(this.sq);
+                    break;
                 }
                 i++;
             }
         }
     }
+}
+
+enum ChunkType{
+    EMPTY,
+    FULL,
+    BEGIN,
+    END
 }

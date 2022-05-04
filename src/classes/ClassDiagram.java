@@ -30,7 +30,7 @@ public class ClassDiagram{
     }
 
     public Class Class_Add(String new_clss){
-        Class newObj = new Class(new_clss);
+        Class newObj = new Class(new_clss,this);
         newObj.SetId(this.classes.size());
         this.classes.add( newObj );
         return newObj;
@@ -45,6 +45,21 @@ public class ClassDiagram{
         return null;
     }
 
+    public CD_Element Element_Get_By_Id(int id){
+        for(classes.Class c : this.classes){
+            for(CD_Element elem:c.GetElements()){
+                if(elem.GetId()==id)
+                    return elem;
+            }
+            for(CD_Element elem: c.GetFunca()){
+                if(elem.GetId()==id)
+                    return elem;
+            }
+        }
+
+        return null;
+    }
+
     public int ClassN_Get(String namer){
         int i=0;
         for(Class clss : this.classes){
@@ -55,11 +70,17 @@ public class ClassDiagram{
         return -1;
     }
 
-    public void Class_Delete(String rem_clss){
-        for(Class clss : this.classes){
-            if(clss.GetName() == rem_clss)
-                this.classes.remove(clss);
+    public void Class_Delete(classes.Class c){
+        List<Bind> toRemove = new ArrayList<Bind>();
+        for(Bind b : this.bind){
+            if(b.GetClass1()==c || b.GetClass2()==c)
+                toRemove.add(b);
         }
+        for(Bind b : toRemove){
+            this.bind.remove(b);
+        }
+        this.classes.remove(c);
+        this.ReId();
     }
 
     public void Bind_Add(String new_bind,Class c1,Class c2){
@@ -87,6 +108,10 @@ public class ClassDiagram{
         this.sd.add(new SequenceDia(name));
     }
 
+    public void SequenceDia_FAdd(SequenceDia newD){
+        this.sd.add(newD);
+    }
+
     public void SequenceDia_Remove(SequenceDia sd){
         this.sd.remove(sd);
     }
@@ -101,6 +126,23 @@ public class ClassDiagram{
 
     public List<SequenceDia> GetSeqD(){
         return this.sd;
+    }
+
+    public void ReId(){
+        for(int i = 0;i<this.GetClasses().size();i++){
+            this.classes.get(i).SetId(i);
+        }
+        int j=0;
+        for(classes.Class c : this.classes){
+            for(CD_Element cd : c.GetElements()){
+                cd.SetId(j);
+                j++;
+            }
+            for(CD_Element cd : c.GetFunca()){
+                cd.SetId(j);
+                j++;
+            }
+        }
     }
 
 }
