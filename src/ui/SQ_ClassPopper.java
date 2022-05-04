@@ -25,6 +25,7 @@ import javafx.scene.layout.VBox;
 
 import classes.ClassDiagram;
 import classes.SequenceDia;
+import classes.Actor;
 
 public class SQ_ClassPopper implements EventHandler<ActionEvent>{
 
@@ -35,11 +36,15 @@ public class SQ_ClassPopper implements EventHandler<ActionEvent>{
     private SequenceDiaInterface sq;
     private ClassDiagram cd;
     private boolean makeEternal;
+    private Actor sourceA;
+    private SequenceDia sqd;
 
-    public SQ_ClassPopper(ClassDiagram cd,SequenceDiaInterface resPonder,boolean eternal){
+    public SQ_ClassPopper(ClassDiagram cd,SequenceDiaInterface resPonder,boolean eternal,Actor a,SequenceDia sq){
         this.buttons=new ArrayList<Button>();
         this.sq=resPonder;
         this.cd = cd;
+        this.sqd = sq;
+        this.sourceA = a;
         this.makeEternal = eternal;
 
         VBox content = this.Chooser(cd);
@@ -79,7 +84,10 @@ public class SQ_ClassPopper implements EventHandler<ActionEvent>{
         for(Button b : this.buttons){
             if(event.getSource()==b){
                 this.secondaryStage.close();
-                this.sq.AddActor(this.cd.GetClasses().get(i),this.makeEternal);
+                Actor a = this.sq.AddActor(this.cd.GetClasses().get(i),this.makeEternal);
+                if(!this.makeEternal){
+                    SQ_FuncPopper sPop = new SQ_FuncPopper(this.sqd, this.sourceA, a, this.sq,true);
+                }
                 break;
             }
             i++;

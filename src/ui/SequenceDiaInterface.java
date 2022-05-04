@@ -1,7 +1,7 @@
 package ui;
 
 import classes.*;
-
+import ui.*;
 
 //Buttons
 import javafx.event.ActionEvent;
@@ -55,6 +55,9 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
     private List<Button> remove_butts;
     private List<Button> sendMesbutts;
     List<Pane> highlighPanes;
+    private List<Button> messButtons;
+
+    private int heightDistance=40;
  
     public SequenceDiaInterface(MainC responder,ClassDiagram cd,SequenceDia seq,int dimX,int dimY){
         this.sq = seq;
@@ -68,7 +71,7 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         Line l = new Line();
         l.setStartX(2.5);
         l.setEndX(2.5);
-        l.setEndY(20);
+        l.setEndY(this.heightDistance);
         Group g = new Group();
         g.getChildren().add(l);
         return g;
@@ -79,24 +82,24 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         Pane p = new Pane();
         p.setPrefWidth(5);
         if(type == ChunkType.FULL)
-            p.setPrefHeight(20);
+            p.setPrefHeight(this.heightDistance);
         else
         if(type == ChunkType.BEGIN){
             Line l = new Line();
             l.setStartX(2.5);
             l.setEndX(2.5);
-            l.setEndY(10);
+            l.setEndY(this.heightDistance/2);
             g.getChildren().add(l);
-            p.setPrefHeight(10);
-            p.setLayoutY(10);
+            p.setPrefHeight(this.heightDistance/2);
+            p.setLayoutY(this.heightDistance/2);
         }else{
             Line l = new Line();
             l.setStartX(2.5);
             l.setEndX(2.5);
-            l.setEndY(20);
-            l.setStartY(10);
+            l.setEndY(this.heightDistance);
+            l.setStartY(this.heightDistance/2);
             g.getChildren().add(l);
-            p.setPrefHeight(10);
+            p.setPrefHeight(this.heightDistance/2);
         }
         p.setStyle("-fx-border-style: solid inside;"
         + "-fx-border-width: 2;"
@@ -114,8 +117,15 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         }
     }
 
-    private Group GenerateArrow(int startX,int startY,int endX,int endY, boolean dotted){
+    private Group GenerateArrow(int startX,int startY,int endX,int endY, boolean dotted,Message m){
         boolean dir_reverse = (startX<endX);
+
+        Button b = new Button(m.GetVisuals());
+        b.setOnAction(this);
+        this.messButtons.add(b);
+        b.setPrefHeight(25);
+        b.setLayoutY(startY-27);
+
         Line l = new Line();
         l.setStartX(startX);
         l.setStartY(startY);
@@ -133,14 +143,16 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
             l.getStrokeDashArray().addAll(25d, 20d, 5d, 20d);
         }
         if(!dir_reverse){
+            b.setLayoutX(endX+5);    
             ul.setEndX(endX+10);
             dl.setEndX(endX+10);
         }else{
+            b.setLayoutX(startX+5);
             dl.setEndX(endX-10);
             ul.setEndX(endX-10);
         }
         Group g = new Group();
-        g.getChildren().addAll(l,ul,dl);
+        g.getChildren().addAll(l,ul,dl,b);
         return g;
     }
 
@@ -198,14 +210,18 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         List<Actor> actors = this.sq.GetCast();
 
         for (int i = 0;i<msList.size();i++){
-            int yCoord = (i+1)*20+headerHeigth+30;
+            int yCoord = (i+1)*this.heightDistance+headerHeigth+20;
             Actor a1 = msList.get(i).GetA1();
             Actor a2 = msList.get(i).GetA2();
             int num1 = this.sq.GetCast().indexOf(a1)+1;
             int num2 = this.sq.GetCast().indexOf(a2)+1;
             int xBegin = (num1)*actorWidth + actorWidth/2;
-            int xEnd = (num2)*actorWidth + actorWidth / 2;
-            Group g = GenerateArrow(xBegin, yCoord, xEnd, yCoord, msList.get(i).GetResponse());
+            int xEnd;
+            if(!msList.get(i).IsConstructor())
+                xEnd = (num2)*actorWidth + actorWidth / 2;
+            else
+                xEnd = (num2)*actorWidth + 20;
+            Group g = GenerateArrow(xBegin, yCoord, xEnd, yCoord, msList.get(i).GetResponse(),msList.get(i));
             returner.getChildren().add(g);
         }
 
@@ -216,6 +232,7 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         this.remove_butts = new ArrayList<Button>();
         this.sendMesbutts = new ArrayList<Button>();
         this.highlighPanes = new ArrayList<Pane>();
+        this.messButtons = new ArrayList<Button>();
 
         Group g = new Group();
 
@@ -255,17 +272,34 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
             Pane header;
             if(i==-1) header = GetHead("user", headerHeigth, actorWidth, i+1,0);
             else if(i==cast.size())header = GetHead("", headerHeigth, actorWidth, i+1,0);
-            else header = GetHead(cast.get(i).GetName(), headerHeigth, actorWidth, i+1,0);
+            else {
+                int off;
+                if(cast.get(i).IsEternal())
+                    off=0;
+                else
+                    off=(this.sq.GetFirstAppearance(cast.get(i))+1)*this.heightDistance+20;
+                header = GetHead(cast.get(i).GetName(), headerHeigth, actorWidth, i+1,off);
+            }
             bckg.getChildren().add(header);
             if(i!=cast.size()){
+                Line l = new Line();
+                l.setStartX(actorWidth/2);
+                l.setEndX(actorWidth/2);
+                l.setStartY(header.getLayoutY() +headerHeigth);
+                l.setEndY(header.getLayoutY()+headerHeigth+20);
+                bckg.getChildren().add(l);
 
                 Actor a;
                 if(i==-1)a=null;
                 else a=cast.get(i);
                 List<Message> connection = this.sq.FindAssociatedMessages(a);
                 boolean ac = false;
-
-                for(int j=-1;j<messages.size();j++){
+                int iter;
+                if(a!=null && a.IsEternal()==false)
+                    iter=this.sq.GetFirstAppearance(cast.get(i))+1;
+                else
+                    iter = -1;
+                for(int j=iter;j<messages.size();j++){
                     Group g1;
                     if(i==-1){
                         g1 = GenerateChunk(ChunkType.FULL);
@@ -296,7 +330,7 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
 
                     }
                     g1.setLayoutX(actorWidth/2 -2.5);
-                    g1.setLayoutY((j+1)*20+headerHeigth+20);
+                    g1.setLayoutY((j+1)*this.heightDistance+headerHeigth+this.heightDistance);
                     bckg.getChildren().add(g1);
                 }
             }
@@ -310,10 +344,11 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
             bt.setOnAction(this);
             bt.setPrefWidth(20);
             bt.setLayoutX((i+1)*actorWidth + actorWidth/2 - 15);
-            bt.setLayoutY((this.sq.GetMessages().size()+1)*20+headerHeigth+20);
+            bt.setLayoutY((this.sq.GetMessages().size()+2)*this.heightDistance+headerHeigth);
             
             Line drawer = new Line();
             int helper = i;
+            
 
             bt.setOnMousePressed(new EventHandler<MouseEvent>(){
                 @Override public void handle(MouseEvent mouseEvent) {
@@ -351,8 +386,14 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
                             else source = cast.get(helper);
                             if(k==0)target=null;
                             else target = cast.get(k-1);
-                            SQ_FuncPopper popperMaster = new SQ_FuncPopper(sq,source,target,h2);
+                            SQ_FuncPopper popperMaster = new SQ_FuncPopper(sq,source,target,h2,false);
                         }
+                    }
+                    if(mouseEvent.getSceneX()>=(cast.size()+1)*actorWidth+20 && mouseEvent.getSceneX()<=(cast.size()+1)*actorWidth-20+actorWidth){
+                        Actor source;
+                        if(helper==-1)source=null;
+                        else source = cast.get(helper);
+                        SQ_ClassPopper popperMaster = new SQ_ClassPopper(workingDia,SequenceDiaInterface.this , false, source, sq);
                     }
                     g.getChildren().remove(drawer);
                     responder.SequenceRefresh(sq);
@@ -375,9 +416,10 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         return this.gui;
     }
 
-    public void AddActor(classes.Class c,boolean eternal){
-        this.sq.AddActor(c,eternal);
+    public Actor AddActor(classes.Class c,boolean eternal){
+        Actor a = this.sq.AddActor(c,eternal);
         this.Refresh();
+        return a;
     }
 
     public void Refresh(){
@@ -391,7 +433,7 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
             this.responder.Refresh();
         }else
         if(event.getSource()==this.add_Actor){
-            SQ_ClassPopper sq = new SQ_ClassPopper(this.workingDia, this,true);
+            SQ_ClassPopper sq = new SQ_ClassPopper(this.workingDia, this,true,null,this.sq);
         }else{
             int i = 0;
             for(Button b : this.remove_butts){
@@ -401,6 +443,12 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
                     break;
                 }
                 i++;
+            }
+            i=0;
+            for(Button b: this.messButtons){
+                if(event.getSource()==b){
+                    MessagePopper ms = new MessagePopper(this.sq.GetMessages().get(i), this, this.sq);
+                }
             }
         }
     }

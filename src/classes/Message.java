@@ -7,12 +7,27 @@ public class Message{
     CD_Element function;
     Actor a1;
     Actor a2;
+    boolean constructor;
+    String text;
  
-    public Message(boolean response, CD_Element func, Actor a1,Actor a2){
+    public Message(boolean response, CD_Element func, Actor a1,Actor a2,boolean constructor,String bgnText){
         this.response = response;
         this.function = func;
         this.a1 = a1;
         this.a2 = a2;
+        this.text = bgnText;
+        this.constructor = constructor;
+    }
+
+    public String GetText(){
+        return this.text;
+    }
+    public void SetText(String text){
+        this.text = text;
+    }
+
+    public boolean IsConstructor(){
+        return this.constructor;
     }
 
     public Actor GetA1(){
@@ -54,5 +69,11 @@ public class Message{
             return "acknowledgment";
         else
             return this.function.GetName();
+    }
+
+    public String GetVisuals(){
+        if(this.response)return(" ");
+        else if(this.constructor)return("<<create>>("+this.text+")");
+        else return this.GetName()+"("+this.text+")";
     }
 }

@@ -2,7 +2,7 @@ package ui;
 
 import classes.*;
 
-//Buttons
+//f_buttons
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -26,7 +26,7 @@ import classes.Actor;
 import classes.ClassDiagram;
 import classes.SequenceDia;
 
-//Buttons
+//f_buttons
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -43,7 +43,7 @@ import javafx.scene.layout.Pane;
 public class SQ_FuncPopper implements EventHandler<ActionEvent>{
 
     
-    private List<Button> buttons;
+    private List<Button> f_buttons;
 
     private Stage secondaryStage;
 
@@ -54,12 +54,15 @@ public class SQ_FuncPopper implements EventHandler<ActionEvent>{
 
     private SequenceDiaInterface responder;
 
-    public SQ_FuncPopper(SequenceDia sd, Actor source,Actor tar,SequenceDiaInterface responder){
-        buttons = new ArrayList<Button>();
+    private boolean constructor;
+
+    public SQ_FuncPopper(SequenceDia sd, Actor source,Actor tar,SequenceDiaInterface responder,boolean constructor){
+        f_buttons = new ArrayList<Button>();
         this.sq=sd;
         this.target=tar;
         this.source = source;
         this.responder = responder;
+        this.constructor = constructor;
 
         VBox content = this.Chooser(tar);
         ScrollPane pane = new ScrollPane();
@@ -91,26 +94,26 @@ public class SQ_FuncPopper implements EventHandler<ActionEvent>{
             b.setOnAction(this);
             b.setPrefWidth(widthOfButt);
             b.setPrefHeight(heightOfButt);
-            this.buttons.add(b);
+            this.f_buttons.add(b);
             v.getChildren().add(b);
         }
         Button b = new Button("Acknowledgement"); 
         b.setOnAction(this);
         b.setPrefWidth(widthOfButt);
         b.setPrefHeight(heightOfButt);
-        this.buttons.add(b);
+        this.f_buttons.add(b);
         v.getChildren().add(b);
         return v;
         
     }
     @Override
     public void handle(ActionEvent event){
-        for(int i = 0;i<this.buttons.size();i++){
-            if(event.getSource()==this.buttons.get(i)){
-                if(i==this.buttons.size()-1){
-                    this.sq.AddMessage(true, null, this.source, this.target);
+        for(int i = 0;i<this.f_buttons.size();i++){
+            if(event.getSource()==this.f_buttons.get(i)){
+                if(i==this.f_buttons.size()-1){
+                    this.sq.AddMessage(true, null, this.source, this.target,constructor,"");
                 }else{
-                    this.sq.AddMessage(false, this.target.GetClass().GetFunca().get(i), this.source, this.target);
+                    this.sq.AddMessage(false, this.target.GetClass().GetFunca().get(i), this.source, this.target,constructor,"");
                 }
                 this.responder.Refresh();
                 this.secondaryStage.close();

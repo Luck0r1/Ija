@@ -132,12 +132,17 @@ public class FileHandler{
                     for(Message m : sq.GetMessages()){
                         Element message = doc.createElement(m.GetName());
                         String s;
+                        String c;
                         if(m.GetResponse())s="1";
                         else s="0";
+                        if(m.IsConstructor())c="1";
+                        else c="0";
                         message.setAttribute("response", s);
                         message.setAttribute("func", Integer.toString(m.GetFuncId()));
                         message.setAttribute("a1", Integer.toString(sq.GetCast().indexOf(m.GetA1())));
                         message.setAttribute("a2", Integer.toString(sq.GetCast().indexOf(m.GetA2())));
+                        message.setAttribute("constructor", c);
+                        message.setAttribute("text", m.GetText());
                         
                         loveLetters.appendChild(message);
                     }
@@ -241,6 +246,8 @@ public class FileHandler{
                     int a1n = Integer.parseInt(msList.item(j).getAttributes().item(0).getNodeValue());
                     int a2n = Integer.parseInt(msList.item(j).getAttributes().item(1).getNodeValue());
                     int fn = Integer.parseInt(msList.item(j).getAttributes().item(2).getNodeValue());
+                    Boolean constructor = (Integer.parseInt(msList.item(j).getAttributes().item(4).getNodeValue())==1);
+                    String text = msList.item(j).getAttributes().item(5).getNodeValue();
                     CD_Element func;
                     Actor a1;
                     Actor a2;
@@ -250,7 +257,7 @@ public class FileHandler{
                     else a2=toAdd.GetCast().get(a2n);
                     if(fn==-1)func=null;
                     else func = toLoad.Element_Get_By_Id(fn);
-                    toAdd.AddMessage(response, func, a1, a2);
+                    toAdd.AddMessage(response, func, a1, a2,constructor,text);
                 }
                 toLoad.SequenceDia_FAdd(toAdd);
             }

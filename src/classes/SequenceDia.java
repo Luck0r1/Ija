@@ -27,8 +27,8 @@ public class SequenceDia{
         return this.name;
     }
 
-    public void AddMessage(boolean response,CD_Element func,Actor source,Actor target){
-        Message messOfALetter = new Message(response, func, source, target);
+    public void AddMessage(boolean response,CD_Element func,Actor source,Actor target,boolean constructor,String data){
+        Message messOfALetter = new Message(response, func, source, target,constructor,data);
         this.loveLetters.add(messOfALetter);
     }
 
@@ -36,11 +36,12 @@ public class SequenceDia{
         this.loveLetters.remove(m);
     }
 
-    public void AddActor(classes.Class toAdd,boolean eternal){
+    public Actor AddActor(classes.Class toAdd,boolean eternal){
         Actor actor = new Actor(toAdd);
         if(eternal)actor.SetEternal();
         this.cast.add(actor);
         this.ReId();
+        return actor;
     }
 
 
@@ -122,5 +123,14 @@ public class SequenceDia{
                 return a;
         }
         return null;
+    }
+
+    public int GetFirstAppearance(Actor a){
+        int i= 0;
+        for(Message m : this.loveLetters){
+            if(m.GetA2()==a)break;
+            i++;
+        }
+        return i;
     }
 }

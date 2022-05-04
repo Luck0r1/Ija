@@ -464,7 +464,7 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
             }
             for(int i=0;i<this.sb_renameDia.size();i++){
                 if(event.getSource()==this.sb_renameDia.get(i)){
-                    
+                    SQDRenamePopper popper = new SQDRenamePopper(this, this.curClass.GetSeqD().get(i));
                     return;
                 }
             }
