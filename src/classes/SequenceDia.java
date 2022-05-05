@@ -12,9 +12,10 @@ public class SequenceDia{
 
     private List<Actor> cast; //HAHA like in the movie
     private List<Message> loveLetters; //HAHA im funny now;
-
-    public SequenceDia(String name){
+    private ClassDiagram cd;
+    public SequenceDia(String name,ClassDiagram curC){
         this.name = name;
+        this.cd = curC;
         this.cast = new ArrayList<Actor>();
         this.loveLetters = new ArrayList<Message>();
     }
@@ -131,6 +132,23 @@ public class SequenceDia{
             if(m.GetA2()==a)break;
             i++;
         }
-        return i;
+        if(i==this.loveLetters.size())return-1;
+        else return i;
+    }
+
+    public void RepairDia(){
+        List<Actor> toRemove = new ArrayList<Actor>();
+        for(Actor a : this.GetCast()){
+            if(a.IsEternal() || GetFirstAppearance(a)==-1)continue;
+            if(!this.cd.GetClasses().contains(a.GetClass())){
+                toRemove.add(a);
+                continue;
+            }
+            if(!this.loveLetters.get(GetFirstAppearance(a)).IsConstructor() )
+                toRemove.add(a);
+        }
+        for(Actor a : toRemove){
+            this.RemoveActorByActor(a);
+        }
     }
 }

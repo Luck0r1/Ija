@@ -100,6 +100,8 @@ public class FileHandler{
                     Element add_bind = doc.createElement(n_bind.GetName());
                     add_bind.setAttribute("c1", n_bind.Get_C1());
                     add_bind.setAttribute("c2", n_bind.Get_C2());
+                    add_bind.setAttribute("lType",Integer.toString(n_bind.Type_Get_L()));
+                    add_bind.setAttribute("rType",Integer.toString(n_bind.Type_Get_R()));
                     for(Class n_elem : n_bind.GetClasses()){
 
                         Element add_c = doc.createElement(n_elem.GetName());
@@ -228,12 +230,14 @@ public class FileHandler{
                                         toLoad.Class_Get_By_Id(Integer.parseInt(elemsToAdd.item(1).getAttributes().item(0).getNodeValue())));
                 adder.Set_C1(bindList.item(i).getAttributes().item(0).getNodeName());
                 adder.Set_C2(bindList.item(i).getAttributes().item(1).getNodeName());
+                adder.Type_Set_L(Integer.parseInt(bindList.item(i).getAttributes().item(2).getNodeValue()));  
+                adder.Type_Set_R(Integer.parseInt(bindList.item(i).getAttributes().item(3).getNodeValue()));
                 toLoad.Bind_FAdd(adder);
                 
             }
 
             for(int i=0;i<seqDList.getLength();i++){
-                SequenceDia toAdd = new SequenceDia(seqDList.item(i).getNodeName());
+                SequenceDia toAdd = new SequenceDia(seqDList.item(i).getNodeName(),toLoad);
                 NodeList acList = seqDList.item(i).getChildNodes().item(0).getChildNodes();
                 NodeList msList = seqDList.item(i).getChildNodes().item(1).getChildNodes();
                 for(int j = 0;j<acList.getLength();j++){

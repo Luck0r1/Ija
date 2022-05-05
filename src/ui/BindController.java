@@ -62,16 +62,23 @@ public class BindController implements EventHandler<ActionEvent>{
         renamer.setOnAction(this);
         this.renameClass = renamer;
         
-        Button side1 = new Button(tar.Get_C1());
-        Button side2 = new Button(tar.Get_C2());
-        side1.setLayoutX(Converts.ToWorldCoordinatesX((int)partsList.get(0).getWidth())-10);
-        side1.setLayoutY(Converts.ToWorldCoordinatesY((int)partsList.get(0).getHeight())-10);
-        side2.setLayoutX(Converts.ToWorldCoordinatesX((int)partsList.get(1).getWidth())-10);
-        side2.setLayoutY(Converts.ToWorldCoordinatesY((int)partsList.get(1).getHeight())-10);
-        side1.setOnAction(this); 
-        side2.setOnAction(this);
-        this.c1 = side1;
-        this.c2 = side2;    
+        if(tar.Type_Get_L()==0){
+            Button side1 = new Button(tar.Get_C1());
+            side1.setLayoutX(Converts.ToWorldCoordinatesX((int)partsList.get(0).getWidth())-10);
+            side1.setLayoutY(Converts.ToWorldCoordinatesY((int)partsList.get(0).getHeight())-10);
+            side1.setOnAction(this);
+            this.c1 = side1;
+            returner.getChildren().add(side1);
+        }
+
+        if(tar.Type_Get_R()==0){
+            Button side2 = new Button(tar.Get_C2());
+            side2.setLayoutX(Converts.ToWorldCoordinatesX((int)partsList.get(1).getWidth())-10);
+            side2.setLayoutY(Converts.ToWorldCoordinatesY((int)partsList.get(1).getHeight())-10); 
+            side2.setOnAction(this);
+            this.c2 = side2;    
+            returner.getChildren().add(side2);
+        }
 
         for(Dimension d : partsList){
             Dimension sender = new Dimension((int)Converts.ToWorldCoordinatesX((int)d.getWidth()),(int)Converts.ToWorldCoordinatesY((int)d.getHeight()));
@@ -79,7 +86,7 @@ public class BindController implements EventHandler<ActionEvent>{
             returner.getChildren().add(g);
         }
 
-        returner.getChildren().addAll(side1,side2,renamer);
+        returner.getChildren().add(renamer);
 
         return returner;
     }

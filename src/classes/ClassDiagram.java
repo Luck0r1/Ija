@@ -71,11 +71,7 @@ public class ClassDiagram{
     }
 
     public void Class_Delete(classes.Class c){
-        List<Bind> toRemove = new ArrayList<Bind>();
-        for(Bind b : this.bind){
-            if(b.GetClass1()==c || b.GetClass2()==c)
-                toRemove.add(b);
-        }
+        List<Bind> toRemove = this.GetAssociatedClasses(c);
         for(Bind b : toRemove){
             this.bind.remove(b);
         }
@@ -105,7 +101,7 @@ public class ClassDiagram{
 
 
     public void SequenceDia_Add(String name){
-        this.sd.add(new SequenceDia(name));
+        this.sd.add(new SequenceDia(name,this));
     }
 
     public void SequenceDia_FAdd(SequenceDia newD){
@@ -126,6 +122,14 @@ public class ClassDiagram{
 
     public List<SequenceDia> GetSeqD(){
         return this.sd;
+    }
+
+    public List<Bind> GetAssociatedClasses(classes.Class c){
+        List<Bind> returner = new ArrayList<Bind>();
+        for(Bind b : this.bind){
+            if(b.GetClass1()==c || b.GetClass2()==c)returner.add(b);
+        }
+        return returner;
     }
 
     public void ReId(){

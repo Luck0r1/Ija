@@ -226,14 +226,20 @@ public class Mapper{
         else if((from == Side.TOP && to == Side.LEFT)||(from == Side.LEFT && to == Side.TOP)){this.mapper.get((int)d.getWidth()).set((int)d.getHeight(),-7);return;}
     }
 
-    private void GenerateMapCon(Dimension d,Side from,boolean arrow){
-        if(!arrow){
+    private void GenerateMapCon(Dimension d,Side from,int type){
+        Side sides[] = {Side.LEFT,Side.TOP,Side.RIGHT,Side.BOTTOM};
+        if(type == 0){
             if(from == Side.LEFT || from == Side.RIGHT)
                 this.mapper.get((int)d.getWidth()).set((int)d.getHeight(),-9);
             else
                 this.mapper.get((int)d.getWidth()).set((int)d.getHeight(),-10);  
-        }else{
-            System.out.println("NY");
+        }else
+        {
+            for(int i=0;i<4;i++)
+                if(sides[i]==from){
+                    this.mapper.get((int)d.getWidth()).set((int)d.getHeight(),-11-(type-1)*4-i);
+                    return;
+                }
         }
     }
 
@@ -440,8 +446,8 @@ public class Mapper{
             finishDir = this.Oppose(this.FillConPoint(b,c2 ,this.Oppose(mainDir, "oppose")),"oppose");
             startPoint = this.GetStartAndTarget(b.GetDims().get(0), startDir);
             endPoint = this.GetStartAndTarget(b.GetDims().get(1), this.Oppose(finishDir, "oppose"));
-            GenerateMapCon(b.GetDims().get(0), startDir, false);
-            GenerateMapCon(b.GetDims().get(1), startDir, false);
+            GenerateMapCon(b.GetDims().get(0), startDir,b.Type_Get_L());
+            GenerateMapCon(b.GetDims().get(1), startDir,b.Type_Get_R());
             boolean rewrite = (this.GetVal((int)startPoint.getWidth(), (int)startPoint.getHeight())==-3);
             if(FillPlace(mainDir, sideDir, startPoint, endPoint, this.Oppose(startDir, "oppose"), this.Oppose(finishDir, "oppose"), rewrite,b)==false){
                 System.out.println("lineF");
@@ -454,8 +460,8 @@ public class Mapper{
             finishDir = this.FillConPoint(b,c1 ,Side.LEFT);
             startPoint = this.GetStartAndTarget(b.GetDims().get(0), Side.TOP);
             endPoint = this.GetStartAndTarget(b.GetDims().get(1), Side.LEFT);
-            GenerateMapCon(b.GetDims().get(0), startDir, false);
-            GenerateMapCon(b.GetDims().get(1), finishDir, false);
+            GenerateMapCon(b.GetDims().get(0), startDir,b.Type_Get_L());
+            GenerateMapCon(b.GetDims().get(1), finishDir,b.Type_Get_R());
             boolean rewrite = (this.GetVal((int)startPoint.getWidth(), (int)startPoint.getHeight())==-3);
             if(FillPlace(mainDir, sideDir, startPoint, endPoint, this.Oppose(startDir, "oppose"), this.Oppose(finishDir, "oppose"), rewrite,b)==false){
                 System.out.println("lineF");

@@ -77,6 +77,8 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
     List<Button> sb_renameDia;
     List<Button> sb_removeDia;
 
+    List<Button> removeClass;
+
     Button b_AddClass;
     Button b_Save;
 
@@ -189,6 +191,7 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
     }
 
     private Pane LoadStage(){
+        this.removeClass = new ArrayList<Button>();
 
         Pane layout = new Pane();
 
@@ -227,6 +230,9 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
             HBox newButts = new HBox();
             Button move = new Button("Move");
             Button addBind = new Button("Add Bind");
+            Button removeClass = new Button("Remove");
+            this.removeClass.add(removeClass);
+            removeClass.setOnAction(this);
 
             /* Line drag functions Bgn*/
             addBind.setOnMousePressed(new EventHandler<MouseEvent>(){
@@ -258,7 +264,7 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
             });
             /*Line drag functions End */            
 
-            newButts.getChildren().addAll(move,addBind);
+            newButts.getChildren().addAll(move,addBind,removeClass);
 
             final Delta dragDelta = new Delta();
 
@@ -323,6 +329,7 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
     }
 
     public void SequenceRefresh(SequenceDia sq){
+        sq.RepairDia();
         Group layout = this.sqi.GetDrawn();
         Scene newScene = new Scene(layout);
         this.primaryStage.setScene(newScene);
@@ -471,6 +478,13 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
             for(int i=0;i<this.sb_removeDia.size();i++){
                 if(event.getSource()==this.sb_removeDia.get(i)){
                     this.curClass.SequenceDia_Remove(this.curClass.GetSeqD().get(i));
+                    this.Refresh();
+                    return;
+                }
+            }
+            for(int i = 0;i<this.removeClass.size();i++){
+                if(event.getSource()==this.removeClass.get(i)){
+                    this.curClass.Class_Delete(this.curClass.GetClasses().get(i));
                     this.Refresh();
                     return;
                 }

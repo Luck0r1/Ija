@@ -65,7 +65,24 @@ public class bPopper implements EventHandler<ActionEvent>{
 
     Button b_submitter;
     Button b_deleter;
+
+    Button b_l_association;
+    Button b_r_association;
+    Button b_l_multiAssoc;
+    Button b_r_multiAssoc;
+    Button b_l_Gener;
+    Button b_r_Gener;
+    Button b_l_GenerFiller;
+    Button b_r_GenerFiller;
+    Button b_l_Agreg;
+    Button b_r_Agreg;
+    Button b_l_AgregFill;
+    Button b_r_AgregFill;
+
     Bind editedBind;
+
+    int temptypeL;
+    int temptypeR;
 
     public bPopper(MainC backSide,BindController calledByGrave,Bind editedB){
         this.backSide = backSide;
@@ -76,6 +93,30 @@ public class bPopper implements EventHandler<ActionEvent>{
         this.secondaryStage.setScene(toShow);
         this.secondaryStage.setAlwaysOnTop(true);
         this.secondaryStage.show();
+    }
+
+    private VBox GetButtonList(boolean side){
+        Button b1 = new Button("Association");
+        Button b2 = new Button("M. Association");
+        Button b3 = new Button("Generalization");
+        //Button b6 = new Button("F. G.");
+        Button b7 = new Button("Agregation");
+        Button b8 = new Button("F.A");
+        b1.setOnAction(this);
+        b2.setOnAction(this);
+        b3.setOnAction(this);
+        b7.setOnAction(this);
+        //b6.setOnAction(this);
+        b8.setOnAction(this);
+        if(side)this.b_l_association=b1;else this.b_r_association=b1;
+        if(side)this.b_l_multiAssoc=b2; else this.b_r_multiAssoc=b2;
+        if(side)this.b_l_Gener=b3; else this.b_r_Gener=b3;
+        //if(side)this.b_l_GenerFiller=b6; else this.b_r_GenerFiller=b6;
+        if(side)this.b_l_AgregFill = b8; else this.b_r_AgregFill = b8;
+        if(side)this.b_l_Agreg = b7; else this.b_r_Agreg = b7;
+        VBox returner = new VBox();
+        returner.getChildren().addAll(b1,b2,b3,b7,b8);
+        return returner;
     }
 
     private Scene popMaker(){
@@ -92,7 +133,11 @@ public class bPopper implements EventHandler<ActionEvent>{
         this.c2 = c2;
         Label tabber1 = new Label("    ");
         Label tabber2 = new Label("    ");
-        topper.getChildren().addAll(c1,tabber1,namer,tabber2,c2);
+
+        VBox buttonsL = this.GetButtonList(true);
+        VBox buttonsR = this.GetButtonList(false);
+
+        topper.getChildren().addAll(buttonsL, c1,tabber1,namer,tabber2,c2,buttonsR);
 
         overlay.getChildren().add(topper);
 
@@ -122,6 +167,8 @@ public class bPopper implements EventHandler<ActionEvent>{
             this.editedBind.SetName(this.namer.getText());
             this.editedBind.Set_C1(this.c1.getText());
             this.editedBind.Set_C2(this.c2.getText());
+            this.editedBind.Type_Set_L(this.temptypeL);
+            this.editedBind.Type_Set_R(this.temptypeR);
             this.secondaryStage.close();
             this.toSave.Refresh();
         }
@@ -131,6 +178,30 @@ public class bPopper implements EventHandler<ActionEvent>{
             this.secondaryStage.close();
             this.toSave.Refresh();
         }
+
+        if(event.getSource()==this.b_l_multiAssoc)
+            this.temptypeL=0;
+        else if(event.getSource()==this.b_r_multiAssoc)
+            this.temptypeR=0;
+        else if (event.getSource()==this.b_l_Gener)
+            this.temptypeL=1;
+        else if (event.getSource()==this.b_r_Gener)
+            this.temptypeR=1;
+        else if (event.getSource()==this.b_l_association)
+            this.temptypeL=2;
+        else if (event.getSource()==this.b_r_association)
+            this.temptypeR=2;
+        else if (event.getSource()==this.b_l_Agreg)
+            this.temptypeL=3;
+        else if (event.getSource()==this.b_r_Agreg)
+            this.temptypeR=3;
+        else if (event.getSource()==this.b_l_AgregFill)
+            this.temptypeL=4;
+        else if (event.getSource()==this.b_r_AgregFill)
+            this.temptypeR=4;
+
+        
+        
     }
 
 }

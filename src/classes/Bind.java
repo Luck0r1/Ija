@@ -11,7 +11,8 @@ public class Bind{
     private String name;
     private String c1C;
     private String c2C;
-    private int type;
+    private int typeL;
+    private int typeR;
     private List<Dimension> dims;
 
     public Bind(String name,Class c1,Class c2){
@@ -25,15 +26,26 @@ public class Bind{
 
         //0 normal
         //1 generalization
-        this.type=0;
+        //2 association
+        //3 aggregation
+        //4 composition
+
+        this.typeL=0;
+        this.typeR=0;
     }
 
-    public void Type_Set(int newType){
-        this.type = newType;
+    public void Type_Set_L(int newType){
+        this.typeL = newType;
+    }
+    public void Type_Set_R(int newType){
+        this.typeR = newType;
     }
 
-    public int Type_Get(){
-        return this.type;
+    public int Type_Get_L(){
+        return this.typeL;
+    }
+    public int Type_Get_R(){
+        return this.typeR;
     }
 
     public String Get_C1(){

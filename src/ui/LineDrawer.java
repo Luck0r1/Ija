@@ -39,6 +39,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
+import javafx.scene.shape.Polygon;
+
 import javafx.scene.shape.Line;
 
 import java.util.*;
@@ -354,7 +356,31 @@ public class LineDrawer{
         return g;
     }
 
+    private Group DrawSquare(Dimension LM_pos,boolean fill){
+        Group g = new Group();
+
+        double LM_Pos_x = LM_pos.getWidth();
+        double LM_Pos_y = LM_pos.getHeight();
+
+        Polygon p = new Polygon();
+        p.getPoints().addAll(new Double[]{
+            LM_Pos_x+2.5, LM_Pos_y-10,
+            LM_Pos_x+15, LM_Pos_y+2.5,
+            LM_Pos_x+2.5, LM_Pos_y+15,
+            LM_Pos_x-10, LM_Pos_y+2.5 });
+        if(fill)        
+            p.setFill(javafx.scene.paint.Color.BLACK);
+        else{
+            p.setFill(javafx.scene.paint.Color.TRANSPARENT);
+            p.setStroke(javafx.scene.paint.Color.BLACK);
+
+        }
+        g.getChildren().add(p);
+        return g;
+    }
+
     public Group DrawXY(int num,Dimension LM_pos){
+        Side sides[] = {Side.LEFT,Side.TOP,Side.RIGHT,Side.BOTTOM};
         switch (num) {
             case -2:
                 return DrawHorizontal(LM_pos);
@@ -384,16 +410,40 @@ public class LineDrawer{
                 return DrawLongHorizontal(LM_pos);
 
             case -11:
-                return DrawArrowDown(LM_pos);
+                return DrawArrowLeft(LM_pos);
 
             case -12:
                 return DrawArrowUp(LM_pos);
 
             case -13:
-                return DrawArrowLeft(LM_pos);
+                return DrawArrowRigth(LM_pos);
 
             case -14:
-                return DrawArrowRigth(LM_pos);
+                return DrawArrowDown(LM_pos);
+
+            case -15:
+                return DrawLongHorizontal(LM_pos);
+
+            case -16:
+                return DrawLongVertical(LM_pos);
+
+            case -17:
+                return DrawLongHorizontal(LM_pos);
+
+            case -18:
+                return DrawLongVertical(LM_pos);
+
+            case -19:
+            case -20:
+            case -21:
+            case -22:
+                return DrawSquare(LM_pos, false);
+                
+            case -23:
+            case -24:
+            case -25:
+            case -26:
+                return DrawSquare(LM_pos, true);
 
             default:
                 return DrawX(LM_pos);
