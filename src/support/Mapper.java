@@ -12,12 +12,23 @@ import classes.*;
 import classes.Class;
 
 
+/**
+ * Class responsible for editing the layer under the visible parts.
+ * This map is form of two dimensional array, and helps with layout of elements 
+ */
 public class Mapper{
 
+    //Class offset
     private int offset = 5;
-    ArrayList<ArrayList<Integer>> mapper;
+    //map itself
+    private ArrayList<ArrayList<Integer>> mapper;
 
-    //in left,right,oppose
+    /**
+     * This returns side thats on s of side x
+     * @param x side in
+     * @param s is left,right,oppose
+     * @return side in relation
+     */
     private Side Oppose(Side x,String s){
         if(s=="oppose"){
             if(x == Side.LEFT)
@@ -49,13 +60,21 @@ public class Mapper{
                 return Side.TOP;
         }
     }
-
+    /**
+     * Loads map with size
+     * @param x
+     * @param y
+     */
     private void LoadMap(int x,int y){
         this.mapper = new ArrayList<ArrayList<Integer>>();
         for (int i=0;i<x/5;i++)
             this.mapper.add(new ArrayList<Integer>(Collections.nCopies(y/5, 0)));
     }
 
+    /**
+     * Fills space for single class in map
+     * @param c class
+     */
     public void FillSpaceForClass(classes.Class c){
 
         int strtX = c.GetPosX();
@@ -76,6 +95,10 @@ public class Mapper{
         }
     }
 
+    /**
+     * Unfills map for single class
+     * @param c class
+     */
     public void UnfilSpaceForClass(classes.Class c){
 
         int strtX = c.GetPosX();
@@ -90,14 +113,30 @@ public class Mapper{
         }
     }
 
+    /**
+     * Returns values of one field in map
+     * @return int
+     */
     public int GetVal(int x,int y){
         return mapper.get(x).get(y);
     }
-
+    /**
+     * Returns value of one field in map in world coordinates
+     * @param x
+     * @param y
+     * @return int
+     */
     public int GetMap(double x,double y){
         return this.mapper.get(Converts.ToMapCoordinatesX(x)).get(Converts.ToMapCoordinatesY(y));
     }
-
+    /**
+     * Checks if there is enough space to place a class here
+     * @param startX
+     * @param startY
+     * @param width
+     * @param height
+     * @return boolean
+     */
     private boolean IsEmpty(int startX,int startY,int width,int height){
         int bgnX = startX-this.offset;
         int endX = startX + width + this.offset;
@@ -119,6 +158,14 @@ public class Mapper{
         return true;
     }
 
+    /**
+     * Finds closest place to place a class
+     * @param c
+     * @param newX
+     * @param newY
+     * @param dimX
+     * @return Dimension of closest place in world coordinates
+     */
     public Dimension FindClosestPlace(classes.Class c,double newX, double newY,int dimX){
         Dimension h = new Dimension(-1,-1);
         int tarPosX = Converts.ToMapCoordinatesX(newX);
@@ -175,12 +222,23 @@ public class Mapper{
         return h;
     }
 
+    /**
+     * Fills place for all classes
+     * @param cd
+     */
     private void FillAll(ClassDiagram cd){
         for (classes.Class c : cd.GetClasses()){
             this.FillSpaceForClass(c);
         }
     }
 
+    /**
+     * Finds connecting point for class
+     * @param b
+     * @param c
+     * @param s
+     * @return Side of allocated point
+     */
     private Side FillConPoint(Bind b,Class c,Side s){
         List<Dimension> listDim;
         List<Dimension> retDim = new ArrayList<Dimension>();
@@ -216,6 +274,13 @@ public class Mapper{
         return s;
     }
 
+    /**
+     * Draws into map to fill bind space
+     * @param d
+     * @param from
+     * @param to
+     * @param rew
+     */
     private void GenerateMapPlace(Dimension d,Side from,Side to,boolean rew){
         if(rew){this.mapper.get((int)d.getWidth()).set((int)d.getHeight(),-8);return;}
         else if((from == Side.LEFT && to == Side.RIGHT)||(from == Side.RIGHT && to == Side.LEFT)){this.mapper.get((int)d.getWidth()).set((int)d.getHeight(),-2);return;}
@@ -226,6 +291,12 @@ public class Mapper{
         else if((from == Side.TOP && to == Side.LEFT)||(from == Side.LEFT && to == Side.TOP)){this.mapper.get((int)d.getWidth()).set((int)d.getHeight(),-7);return;}
     }
 
+    /**
+     * Draws into map correct kind of connecting point
+     * @param d
+     * @param from
+     * @param type
+     */
     private void GenerateMapCon(Dimension d,Side from,int type){
         Side sides[] = {Side.LEFT,Side.TOP,Side.RIGHT,Side.BOTTOM};
         if(type == 0){
@@ -242,7 +313,13 @@ public class Mapper{
                 }
         }
     }
-
+    /**
+     * Gets remaining side from three given
+     * @param s1
+     * @param s2
+     * @param s3
+     * @return
+     */
     private Side GetRemainingSide(Side s1,Side s2,Side s3){
         List<Side> s = new ArrayList<Side>();
         s.add(Side.RIGHT);
@@ -256,6 +333,15 @@ public class Mapper{
         return f;
     }
 
+    /**
+     * Get priority of direction to go
+     * @param mainDir
+     * @param sideDir
+     * @param currentPlace
+     * @param target
+     * @param from
+     * @return List<Side>
+     */
     private List<Side> GetPrior(Side mainDir,Side sideDir, Dimension currentPlace,Dimension target, Side from){
         List<Side> returner = new ArrayList<>();
         List<Side> sider = new ArrayList<>();
@@ -328,6 +414,18 @@ public class Mapper{
         return returner;
     }
 
+    /**
+     * This function is called recursivly to draw the whole bind to map
+     * @param mainDir
+     * @param sideDir
+     * @param currentPlace
+     * @param target
+     * @param from
+     * @param till
+     * @param rew
+     * @param b
+     * @return boolean
+     */
     private boolean FillPlace(Side mainDir,Side sideDir, Dimension currentPlace,Dimension target, Side from, Side till,boolean rew,Bind b){
         if(currentPlace.getWidth()==target.getWidth() && currentPlace.getHeight()==target.getHeight()){
             this.GenerateMapPlace(currentPlace, from, till, rew);
@@ -401,6 +499,12 @@ public class Mapper{
         return false;
     }
 
+    /**
+     * Gets the beggining and ending point for bind
+     * @param d1
+     * @param s1
+     * @return
+     */
     private Dimension GetStartAndTarget(Dimension d1,Side s1){
         Dimension add1=new Dimension();
         
@@ -414,10 +518,13 @@ public class Mapper{
             add1.setSize(d1.width, d1.height+3);
         return add1;
     }
-
+    /**
+     * Fils the bind
+     * @param b
+     */
     public void FillBind(Bind b){
-        Class c1 = b.GetClasses().get(0);
-        Class c2 = b.GetClasses().get(1);
+        Class c1 = b.GetClass1();
+        Class c2 = b.GetClass2();
 
         int c1_x = c1.GetPosX();
         int c1_y = c1.GetPosY();
@@ -486,13 +593,20 @@ public class Mapper{
             }
         }
     }
-
+    /**
+     * Fills all binds to map
+     * @param cd
+     */
     public void FillBinds(ClassDiagram cd){
         for(Bind b : cd.GetBinds()){
             this.FillBind(b);    
         }
     }
 
+    /**
+     * Removes content of bind from map
+     * @param b
+     */
     public void UnfillBind(Bind b){
         List<Dimension> dmList = b.GetDims();
         if(dmList.size()==0)return;
@@ -506,12 +620,20 @@ public class Mapper{
         b.ResetDims();
     }
 
+    /**
+     * Removes all binds from map
+     * @param cd
+     */
     public void UnfillBinds(ClassDiagram cd){
         for(Bind b : cd.GetBinds()){
             this.UnfillBind(b);
         }
     }
 
+    /**
+     * Debug function
+     * @param cd
+     */
     public void DebugFillCons(ClassDiagram cd){
         for(classes.Class c : cd.GetClasses()){
             c.RefillConnectors();
@@ -530,6 +652,10 @@ public class Mapper{
         }
     }
 
+    /**
+     * Debug function
+     * @return
+     */
     public Pane DebugMap(){
         Pane rPane = new Pane();
         for(int i=0;i<this.mapper.size();i++){
@@ -559,7 +685,7 @@ public class Mapper{
     
         return rPane;
     }
-
+    
     public Mapper(int dimX,int dimY,ClassDiagram cd){
         this.LoadMap(dimX-300, dimY);
         this.FillAll(cd);

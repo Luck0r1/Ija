@@ -29,8 +29,19 @@ import org.xml.sax.SAXException;
 
 import classes.ClassDiagram;
 
+/**
+ * Class used for handling files. Has functions that load, save and create Class diagrams.
+ * These diagrams are saved in .xml format and are readable only by this application.
+ * Dom parser is used for parsing and creating xml files.
+ */
 public class FileHandler{
     
+    /**
+     * Renames file 
+     * @param dir path to directory
+     * @param old old name
+     * @param newN new Name
+     */
     public void Rename_F(String dir,String old,String newN){
 
         for (File phil : new File(dir).listFiles()){
@@ -40,6 +51,11 @@ public class FileHandler{
         }
     }
 
+    /**
+     * Deletes file
+     * @param dir path to directory
+     * @param name name of file for deletion
+     */
     public void Delete_F(String dir,String name){
         for (File phil : new File(dir).listFiles()){
             
@@ -49,6 +65,11 @@ public class FileHandler{
         }
     }
 
+    /**
+     * Saves class diagram in .xml format
+     * @param pathway path to directory
+     * @param curClass classdiagram being saved
+     */
     public void Save(String pathway,ClassDiagram curClass){
         
         String fileN = curClass.GetName();
@@ -102,18 +123,20 @@ public class FileHandler{
                     add_bind.setAttribute("c2", n_bind.Get_C2());
                     add_bind.setAttribute("lType",Integer.toString(n_bind.Type_Get_L()));
                     add_bind.setAttribute("rType",Integer.toString(n_bind.Type_Get_R()));
-                    for(Class n_elem : n_bind.GetClasses()){
 
+                        Class n_elem = n_bind.GetClass1();
                         Element add_c = doc.createElement(n_elem.GetName());
                         add_c.setAttribute("id", Integer.toString(n_elem.GetId()));
-                        add_bind.appendChild(add_c);
-                    }
+
+                        Class n_elem2 = n_bind.GetClass1();
+                        Element add_c2 = doc.createElement(n_elem2.GetName());
+                        add_c2.setAttribute("id", Integer.toString(n_elem2.GetId()));
+                        add_bind.appendChild(add_c2);
                     binds.appendChild(add_bind);
                 }
 
                 for (SequenceDia sq : curClass.GetSeqD()){
                     sq.ReId();
-                    //System.out.print(sq.GetName());
                     Element add_sequence_dia = doc.createElement(sq.GetName());
 
                     Element cast = doc.createElement("cast");
@@ -155,20 +178,25 @@ public class FileHandler{
 
                 TransformerFactory transformerFactory = TransformerFactory.newInstance();
                 Transformer transformer = transformerFactory.newTransformer();
-                //transformer.setOutputProperty(OutputKeys.INDENT,"yes");
                 DOMSource domSource = new DOMSource(doc);
                 StreamResult streamResult = new StreamResult(new File(pathway+"/"+fileN));
 
                 transformer.transform(domSource, streamResult);
 
             } catch (ParserConfigurationException pce) {
-                //TODO: handle exception
+                System.exit(1);
             } catch (TransformerException tfe){
-                //TODO
+                System.exit(1);
             }
         }
     }
 
+    /**
+     * Loads diagram from .xml file
+     * @param pathway path to directory
+     * @param fileL file name
+     * @return new classdiagram //P.S my class diagram also includes it's sequence diagrams
+     */
     public ClassDiagram Load(String pathway, String fileL){
         try{
             File inputFile = new File(pathway+"/"+fileL);
@@ -270,10 +298,15 @@ public class FileHandler{
             return toLoad;
         } catch (Exception e) {
             //TODO: handle exception
+            System.exit(1);
             return null;
         }
     }
 
+    /**
+     * Creates new empty file with new class diagram
+     * @param pathway path to directory
+     */
     public void New(String pathway){
         if(true){
             try {
@@ -301,11 +334,10 @@ public class FileHandler{
 
 
             } catch (ParserConfigurationException pce) {
-                //TODO: handle exception
+                System.exit(1);
             } catch (TransformerException tfe){
-                //TODO
+                System.exit(1);
             }
         }
     }
-    //Transformer.setOutputProperty(outputkeys.INDENT,"yes") 
 }

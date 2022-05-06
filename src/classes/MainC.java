@@ -61,7 +61,7 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
     Line drawer;
 
     Stage primaryStage;
-    String pathway="./data";
+    String pathway="./../data";
 
     Group drawerG;
 

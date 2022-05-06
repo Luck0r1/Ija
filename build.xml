@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!-- Set the project name, basedir and default target to be executed-->
+<project name="ija-uml" default="app" basedir=".">
+ 
+  <!-- Target for deleting the existing directories-->
+  <target name="clean">
+    <delete dir="./build" />
+	  <mkdir dir="./build" />
+    <delete file="./dest/app.jar"/>
+    <delete includeemptydirs="true">
+      <fileset dir="./lib/" includes="**/*" excludes="get-libs.sh"/>
+    </delete>
+    <delete includeemptydirs="true">
+      <fileset dir="./doc/" includes="**/*" />
+    </delete>
+  </target>
+
+  <!-- Download the javaFX libs-->
+  <target name="download">
+	<exec executable="bash">
+	  <arg value="./lib/get-libs.sh"/>
+	</exec>
+  </target>
+
+  <target name="delete-previous">
+    <delete includeemptydirs="true">
+      <fileset dir="./build" includes="**/*"/>
+    </delete>
+  </target>
+
+  <!-- Target for compiling libs-->
+  <target name="compile-libs" depends="delete-previous">
+	<javac srcdir="./src/" destdir="./build" classpath="./lib/javafx-sdk-18/lib/javafx.base.jar">
+		<compilerarg line="--module-path lib/javafx-sdk-18/lib/ --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web -Xlint:unchecked"/>
+	</javac>
+  </target>
+ 
+  <!-- Target for compiling the java code-->
+  <target name="compile" depends="compile-libs">
+    <javac srcdir="./src/" destdir="./build" classpath="./lib/javafx-sdk-18/lib/javafx.base.jar">
+	  <classpath path="./src" />
+	  <compilerarg line="--module-path lib/javafx-sdk-18/lib/ --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web  -Xlint:unchecked"/>
+    </javac>	
+  </target>
+
+  <target name="jar" depends="compile">
+    <jar destfile="./dest/app.jar" basedir="./build" >
+    <zipgroupfileset dir="./lib/javafx-sdk-18/lib/" includes="*.*.jar" />
+      <manifest>
+        <attribute name="Main-Class" value="Starter"/>
+      </manifest>
+    </jar>
+  </target>
+
+<!-- Generate documentation -->
+  <target name="javadoc">
+    <javadoc destdir="./doc" sourcepath="./src" >
+    	<packageset dir="./src">
+    		<include name="classes.*"/>
+    		<include name="support.*"/>
+    		<include name="ui.*"/>
+  	</packageset>
+  	<classpath>
+  	<fileset dir="./lib/javafx-sdk-18/lib/">
+  		<include name="javafx.base.jar"/>
+  		<include name="javafx.controls.jar"/>
+  		<include name="javafx.fxml.jar"/>
+  		<include name="javafx.graphics.jar"/>
+  	</fileset>
+  	</classpath>
+    </javadoc>
+  </target>
+ 
+ 
+  <!-- Defualt target to run all targets-->
+  <target name="app" depends="jar,javadoc">
+    <description>Main target</description>
+	  <java jar="./dest/ija-app.jar" fork="true"/>
+	  
+  </target>
+  
+  <!-- Target to make the jar file and clean .class files -->
+  <target name="app-rm" depends="jar, clean">
+	  <java jar="./dest/app.jar" fork="true"/>
+  </target>
+ 
+</project>
