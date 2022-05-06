@@ -88,6 +88,8 @@ public class bPopper implements EventHandler<ActionEvent>{
         this.backSide = backSide;
         this.editedBind = editedB;
         this.toSave = calledByGrave;
+        this.temptypeL = editedB.Type_Get_L();
+        this.temptypeR = editedB.Type_Get_R();
         Scene toShow = popMaker();
         this.secondaryStage = new Stage();
         this.secondaryStage.setScene(toShow);

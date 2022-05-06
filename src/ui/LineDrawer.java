@@ -246,20 +246,20 @@ public class LineDrawer{
         double LM_Pos_x = LM_pos.getWidth();
         double LM_Pos_y = LM_pos.getHeight();
 
-        l1.setStartX(LM_Pos_x-5);
-        l1.setStartY(LM_Pos_y-5);
-        l1.setEndX(LM_Pos_x+10);
-        l1.setEndY(LM_Pos_y-5);
+        l1.setStartX(LM_Pos_x-10);
+        l1.setStartY(LM_Pos_y-10);
+        l1.setEndX(LM_Pos_x+15);
+        l1.setEndY(LM_Pos_y-10);
 
-        l2.setStartX(LM_Pos_x-5);
-        l2.setStartY(LM_Pos_y-5);
+        l2.setStartX(LM_Pos_x-10);
+        l2.setStartY(LM_Pos_y-10);
         l2.setEndX(LM_Pos_x+2.5);
-        l2.setEndY(LM_Pos_y+10);
+        l2.setEndY(LM_Pos_y+15);
 
         l3.setStartX(LM_Pos_x+2.5);
-        l3.setStartY(LM_Pos_y+10);
-        l3.setEndX(LM_Pos_x+10);
-        l3.setEndY(LM_Pos_y-5);
+        l3.setStartY(LM_Pos_y+15);
+        l3.setEndX(LM_Pos_x+15);
+        l3.setEndY(LM_Pos_y-10);
 
         g.getChildren().addAll(l1,l2,l3);
 
@@ -276,20 +276,20 @@ public class LineDrawer{
         double LM_Pos_x = LM_pos.getWidth();
         double LM_Pos_y = LM_pos.getHeight();
 
-        l1.setStartX(LM_Pos_x+10);
-        l1.setStartY(LM_Pos_y-5);
-        l1.setEndX(LM_Pos_x-5);
+        l1.setStartX(LM_Pos_x+15);
+        l1.setStartY(LM_Pos_y-10);
+        l1.setEndX(LM_Pos_x-10);
         l1.setEndY(LM_Pos_y+2.5);
 
-        l2.setStartX(LM_Pos_x-5);
+        l2.setStartX(LM_Pos_x-10);
         l2.setStartY(LM_Pos_y+2.5);
-        l2.setEndX(LM_Pos_x+10);
-        l2.setEndY(LM_Pos_y+10);
+        l2.setEndX(LM_Pos_x+15);
+        l2.setEndY(LM_Pos_y+15);
 
-        l3.setStartX(LM_Pos_x+10);
-        l3.setStartY(LM_Pos_y-5);
-        l3.setEndX(LM_Pos_x+10);
-        l3.setEndY(LM_Pos_y+10);
+        l3.setStartX(LM_Pos_x+15);
+        l3.setStartY(LM_Pos_y-10);
+        l3.setEndX(LM_Pos_x+15);
+        l3.setEndY(LM_Pos_y+15);
 
         g.getChildren().addAll(l1,l2,l3);
 
@@ -306,20 +306,20 @@ public class LineDrawer{
         double LM_Pos_x = LM_pos.getWidth();
         double LM_Pos_y = LM_pos.getHeight();
 
-        l1.setStartX(LM_Pos_x-5);
-        l1.setStartY(LM_Pos_y-5);
-        l1.setEndX(LM_Pos_x-5);
-        l1.setEndY(LM_Pos_y+10);
+        l1.setStartX(LM_Pos_x-10);
+        l1.setStartY(LM_Pos_y-10);
+        l1.setEndX(LM_Pos_x-10);
+        l1.setEndY(LM_Pos_y+15);
 
-        l2.setStartX(LM_Pos_x-5);
-        l2.setStartY(LM_Pos_y-5);
-        l2.setEndX(LM_Pos_x+10);
+        l2.setStartX(LM_Pos_x-10);
+        l2.setStartY(LM_Pos_y-10);
+        l2.setEndX(LM_Pos_x+15);
         l2.setEndY(LM_Pos_y+2.5);
 
-        l3.setStartX(LM_Pos_x+10);
+        l3.setStartX(LM_Pos_x+15);
         l3.setStartY(LM_Pos_y+2.5);
-        l3.setEndX(LM_Pos_x-5);
-        l3.setEndY(LM_Pos_y+10);
+        l3.setEndX(LM_Pos_x-10);
+        l3.setEndY(LM_Pos_y+15);
 
         g.getChildren().addAll(l1,l2,l3);
 
@@ -336,22 +336,42 @@ public class LineDrawer{
         double LM_Pos_x = LM_pos.getWidth();
         double LM_Pos_y = LM_pos.getHeight();
 
-        l1.setStartX(LM_Pos_x-5);
-        l1.setStartY(LM_Pos_y+10);
-        l1.setEndX(LM_Pos_x+10);
-        l1.setEndY(LM_Pos_y+10);
+        l1.setStartX(LM_Pos_x-10);
+        l1.setStartY(LM_Pos_y+15);
+        l1.setEndX(LM_Pos_x+15);
+        l1.setEndY(LM_Pos_y+15);
 
         l2.setStartX(LM_Pos_x+2.5);
-        l2.setStartY(LM_Pos_y-5);
-        l2.setEndX(LM_Pos_x-5);
-        l2.setEndY(LM_Pos_y+10);
+        l2.setStartY(LM_Pos_y-10);
+        l2.setEndX(LM_Pos_x-10);
+        l2.setEndY(LM_Pos_y+15);
 
         l3.setStartX(LM_Pos_x+2.5);
-        l3.setStartY(LM_Pos_y-5);
-        l3.setEndX(LM_Pos_x+10);
-        l3.setEndY(LM_Pos_y+10);
+        l3.setStartY(LM_Pos_y-10);
+        l3.setEndX(LM_Pos_x+15);
+        l3.setEndY(LM_Pos_y+15);
 
         g.getChildren().addAll(l1,l2,l3);
+
+        return g;
+    }
+
+    private Group DrawTurn(Dimension LM_pos){
+        Group g = new Group();
+
+        double LM_Pos_x = LM_pos.getWidth();
+        double LM_Pos_y = LM_pos.getHeight();
+
+        Polygon p = new Polygon();
+        p.getPoints().addAll(new Double[]{
+            LM_Pos_x, LM_Pos_y,
+            LM_Pos_x+5, LM_Pos_y,
+            LM_Pos_x+5, LM_Pos_y+5,
+            LM_Pos_x, LM_Pos_y+5 });
+                
+        p.setFill(javafx.scene.paint.Color.BLACK);
+        
+        g.getChildren().add(p);
 
         return g;
     }
@@ -389,19 +409,24 @@ public class LineDrawer{
                 return DrawVertical(LM_pos);
 
             case -4:
-                return DrawThree(LM_pos);
+                return DrawTurn(LM_pos);
+                //return DrawNine(LM_pos);
 
             case -5:
-                return DrawOPThree(LM_pos);
+                return DrawTurn(LM_pos);
+                //return DrawOPThree(LM_pos);
 
             case -6:
-                return DrawOPNine(LM_pos);
-            
+                //return DrawOPNine(LM_pos);
+                return DrawTurn(LM_pos);
+
             case -7:
-                return DrawNine(LM_pos);
+                //return DrawThree(LM_pos);
+                return DrawTurn(LM_pos);
         
             case -8:
-                return DrawX(LM_pos);
+                //return DrawX(LM_pos);
+                return DrawTurn(LM_pos);
 
             case -9:
                 return DrawLongVertical(LM_pos);
@@ -410,28 +435,24 @@ public class LineDrawer{
                 return DrawLongHorizontal(LM_pos);
 
             case -11:
-                return DrawArrowLeft(LM_pos);
-
-            case -12:
-                return DrawArrowUp(LM_pos);
-
-            case -13:
                 return DrawArrowRigth(LM_pos);
 
-            case -14:
+            case -12:
                 return DrawArrowDown(LM_pos);
 
+            case -13:
+                return DrawArrowLeft(LM_pos);
+
+            case -14:
+                return DrawArrowUp(LM_pos);
+
             case -15:
-                return DrawLongHorizontal(LM_pos);
-
-            case -16:
-                return DrawLongVertical(LM_pos);
-
             case -17:
-                return DrawLongHorizontal(LM_pos);
-
-            case -18:
                 return DrawLongVertical(LM_pos);
+            
+            case -16:
+            case -18:
+                return DrawLongHorizontal(LM_pos);
 
             case -19:
             case -20:

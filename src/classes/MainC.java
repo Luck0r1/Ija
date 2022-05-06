@@ -256,7 +256,6 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
                 @Override public void handle(MouseEvent mouseEvent) {
                     if(mapper.GetMap(mouseEvent.getSceneX(),mouseEvent.getSceneY())>0){
                         MainC.this.curClass.Bind_Add("new_bind",curClass,MainC.this.curClass.GetClasses().get(mapper.GetMap(mouseEvent.getSceneX(),mouseEvent.getSceneY())-1));
-                        System.out.println("hit");
                     }
                     layout.getChildren().remove(drawer);
                     MainC.this.Refresh();
@@ -373,11 +372,11 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
 
     public Group RefreshLines(){
         Group newGr = new Group();
-        for(classes.Class c : this.curClass.GetClasses())
+        for(classes.Class c : this.curClass.GetClasses()){
             c.RefillConnectors();
+        }
         for(Bind b : this.curClass.GetBinds()){
-
-            
+            this.mapper.UnfillBind(b);
             this.mapper.FillBind(b);
 
             BindController ctrl = new BindController(b,this,this.curClass);

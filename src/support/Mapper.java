@@ -257,64 +257,81 @@ public class Mapper{
     }
 
     private List<Side> GetPrior(Side mainDir,Side sideDir, Dimension currentPlace,Dimension target, Side from){
+        List<Side> returner = new ArrayList<>();
         List<Side> sider = new ArrayList<>();
-        sider.add(this.GetRemainingSide(mainDir, sideDir, from));
-
-        if(sideDir == Side.TOP){
-            if(currentPlace.getHeight()>target.getHeight())
-                sider.add(0,sideDir);
-            else
-                sider.add(sideDir);
-                
-        }else
-        if(sideDir==Side.LEFT){
-            if(currentPlace.getWidth()>target.getWidth())
-                sider.add(0,sideDir);
-            else
-                sider.add(sideDir);
-        }else
-        if(sideDir==Side.BOTTOM){
-            if(currentPlace.getHeight()<target.getHeight())
-                sider.add(0,sideDir);
-            else
-                sider.add(sideDir);
-        }else{
-            if(currentPlace.getWidth()<target.getWidth())
-                sider.add(0,sideDir);
-            else
-                sider.add(sideDir);
-        }
+        sider.add(Side.TOP);
+        sider.add(Side.BOTTOM);
+        sider.add(Side.LEFT);
+        sider.add(Side.RIGHT);
+        sider.remove(from);
 
         if(mainDir == Side.TOP){
-            if(currentPlace.getHeight()>target.getHeight())
-                sider.add(0,mainDir);
-            else
-                sider.add(mainDir);
+            if(currentPlace.getHeight()>target.getHeight() && sider.contains(mainDir))
+                returner.add(mainDir);
         }else
         if(mainDir==Side.LEFT){
-            if(currentPlace.getWidth()>target.getWidth())
-                sider.add(0,mainDir);
-            else
-                sider.add(mainDir);
+            if(currentPlace.getWidth()>target.getWidth() && sider.contains(mainDir))
+                returner.add(mainDir);
         }else
         if(mainDir==Side.BOTTOM){
-            if(currentPlace.getHeight()<target.getHeight())
-                sider.add(0,mainDir);
-            else
-                sider.add(mainDir);
+            if(currentPlace.getHeight()<target.getHeight() && sider.contains(mainDir))
+                returner.add(mainDir);
         }else{
-            if(currentPlace.getWidth()<target.getWidth())
-                sider.add(0,mainDir);
-            else
-                sider.add(mainDir);
+            if(currentPlace.getWidth()<target.getWidth() && sider.contains(mainDir))
+                returner.add(mainDir);
         }
 
-        return sider;
+        if(sideDir == Side.TOP){
+            if(currentPlace.getHeight()>target.getHeight() && sider.contains(sideDir))
+                returner.add(sideDir);
+        }else
+        if(sideDir==Side.LEFT){
+            if(currentPlace.getWidth()>target.getWidth() && sider.contains(sideDir))
+                returner.add(sideDir);
+        }else
+        if(sideDir==Side.BOTTOM){
+            if(currentPlace.getHeight()<target.getHeight() && sider.contains(sideDir))
+                returner.add(sideDir);
+        }else{
+            if(currentPlace.getWidth()<target.getWidth() && sider.contains(sideDir))
+                returner.add(sideDir);
+        }
+
+        for(Side s : returner)
+            sider.remove(s);
+
+        for(Side s: sider){
+            if(s == Side.TOP){
+                if(currentPlace.getHeight()>=target.getHeight())
+                    returner.add(s);
+            }else
+            if(s==Side.LEFT){
+                if(currentPlace.getWidth()>=target.getWidth())
+                    returner.add(s);
+            }else
+            if(s==Side.BOTTOM){
+                if(currentPlace.getHeight()<=target.getHeight())
+                    returner.add(s);
+            }else{
+                if(currentPlace.getWidth()<=target.getWidth())
+                    returner.add(s);
+            }
+        }
+
+        for(Side s : returner)
+            sider.remove(s);
+
+        for(Side s : sider){
+            returner.add(s);
+        }
+
+        return returner;
     }
 
     private boolean FillPlace(Side mainDir,Side sideDir, Dimension currentPlace,Dimension target, Side from, Side till,boolean rew,Bind b){
         if(currentPlace.getWidth()==target.getWidth() && currentPlace.getHeight()==target.getHeight()){
-            GenerateMapPlace(currentPlace, from, till, rew);
+            this.GenerateMapPlace(currentPlace, from, till, rew);
+            b.GetDims().add(currentPlace);
             return true;
         }
         List<Side> priorityQueue = this.GetPrior(mainDir, sideDir, currentPlace, target, from);
@@ -443,13 +460,13 @@ public class Mapper{
                 sideDir = c1_p1;    
             }
             startDir = this.FillConPoint(b,c1 ,mainDir);
-            finishDir = this.Oppose(this.FillConPoint(b,c2 ,this.Oppose(mainDir, "oppose")),"oppose");
+            finishDir = this.FillConPoint(b,c2 ,this.Oppose(mainDir, "oppose"));
             startPoint = this.GetStartAndTarget(b.GetDims().get(0), startDir);
-            endPoint = this.GetStartAndTarget(b.GetDims().get(1), this.Oppose(finishDir, "oppose"));
+            endPoint = this.GetStartAndTarget(b.GetDims().get(1), finishDir);
             GenerateMapCon(b.GetDims().get(0), startDir,b.Type_Get_L());
-            GenerateMapCon(b.GetDims().get(1), startDir,b.Type_Get_R());
+            GenerateMapCon(b.GetDims().get(1), finishDir,b.Type_Get_R());
             boolean rewrite = (this.GetVal((int)startPoint.getWidth(), (int)startPoint.getHeight())==-3);
-            if(FillPlace(mainDir, sideDir, startPoint, endPoint, this.Oppose(startDir, "oppose"), this.Oppose(finishDir, "oppose"), rewrite,b)==false){
+            if(FillPlace(mainDir, sideDir, startPoint, endPoint, this.Oppose(startDir, "oppose"), finishDir, rewrite,b)==false){
                 System.out.println("lineF");
                 System.exit(1);
             }
@@ -478,16 +495,15 @@ public class Mapper{
 
     public void UnfillBind(Bind b){
         List<Dimension> dmList = b.GetDims();
-            Dimension dm = dmList.get(0);
-            this.mapper.get((int)dm.getWidth()).set((int)dm.getHeight(),0);
-            dmList.remove(dm);
-            dm = dmList.get(0);
-            this.mapper.get((int)dm.getWidth()).set((int)dm.getHeight(),0);
-            dmList.remove(dm);
-            for(Dimension d : dmList){
-                mapper.get((int)d.getWidth()).set((int)dm.getHeight(),0);
-            }
-            b.ResetDims();
+        if(dmList.size()==0)return;
+        Dimension dm = dmList.get(0);
+        dmList.remove(dm);
+        dm = dmList.get(0);
+        dmList.remove(dm);
+        for(Dimension d : dmList){
+            mapper.get((int)d.getWidth()).set((int)dm.getHeight(),0);
+        }
+        b.ResetDims();
     }
 
     public void UnfillBinds(ClassDiagram cd){

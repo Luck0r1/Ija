@@ -62,6 +62,12 @@ public class BindController implements EventHandler<ActionEvent>{
         renamer.setOnAction(this);
         this.renameClass = renamer;
         
+        for(Dimension d : partsList){
+            Dimension sender = new Dimension((int)Converts.ToWorldCoordinatesX((int)d.getWidth()),(int)Converts.ToWorldCoordinatesY((int)d.getHeight()));
+            Group g = drawer.DrawXY(maii.mapper.GetVal((int)d.getWidth(),(int)d.getHeight()), sender);
+            returner.getChildren().add(g);
+        }
+
         if(tar.Type_Get_L()==0){
             Button side1 = new Button(tar.Get_C1());
             side1.setLayoutX(Converts.ToWorldCoordinatesX((int)partsList.get(0).getWidth())-10);
@@ -80,11 +86,7 @@ public class BindController implements EventHandler<ActionEvent>{
             returner.getChildren().add(side2);
         }
 
-        for(Dimension d : partsList){
-            Dimension sender = new Dimension((int)Converts.ToWorldCoordinatesX((int)d.getWidth()),(int)Converts.ToWorldCoordinatesY((int)d.getHeight()));
-            Group g = drawer.DrawXY(maii.mapper.GetVal((int)d.getWidth(),(int)d.getHeight()), sender);
-            returner.getChildren().add(g);
-        }
+
 
         returner.getChildren().add(renamer);
 
