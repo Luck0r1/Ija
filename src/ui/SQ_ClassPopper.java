@@ -98,9 +98,9 @@ public class SQ_ClassPopper implements EventHandler<ActionEvent>{
                 Actor a = this.sq.AddActor(this.cd.GetClasses().get(i),this.makeEternal);
                 if(!this.makeEternal){
                     this.sqd.AddMessage(true, null, this.sourceA, a,true,"");
-                    this.sq.Refresh();
                     //SQ_FuncPopper sPop = new SQ_FuncPopper(this.sqd, this.sourceA, a, this.sq,true);
                 }
+                this.sq.Refresh();
                 break;
             }
             i++;

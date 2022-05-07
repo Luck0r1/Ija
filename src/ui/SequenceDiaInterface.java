@@ -482,7 +482,6 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
      */
     public Actor AddActor(classes.Class c,boolean eternal){
         Actor a = this.sq.AddActor(c,eternal);
-        this.Refresh();
         return a;
     }
 
@@ -520,6 +519,7 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
                 if(event.getSource()==b){
                     MessagePopper ms = new MessagePopper(this.sq.GetMessages().get(i), this, this.sq);
                 }
+                i++;
             }
         }
     }

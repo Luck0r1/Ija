@@ -93,23 +93,26 @@ public class FileHandler{
                 root.appendChild(sequenceDias);
 
                 for (Class n_class : curClass.GetClasses()) {
-                    Element add_class = doc.createElement(n_class.GetName());
+                    Element add_class = doc.createElement("newClass");
                     add_class.setAttribute("x", Integer.toString( n_class.GetPosX()));
                     add_class.setAttribute("y", Integer.toString( n_class.GetPosY()));
                     add_class.setAttribute("id", Integer.toString(n_class.GetId()));
+                    add_class.setAttribute("zname", n_class.GetName());
                     Element add_args = doc.createElement("args");
                     for(CD_Element n_elem : n_class.GetElements()){
-                        Element add_elem = doc.createElement(n_elem.GetName());
+                        Element add_elem = doc.createElement("newAttrib");
                         add_elem.setAttribute("type", n_elem.GetType());
                         add_elem.setAttribute("access", n_elem.GetAccess());
+                        add_elem.setAttribute("zname", n_elem.GetName());
                         add_args.appendChild(add_elem);
                     }
                     Element add_funcs = doc.createElement("funcs");
                     for(CD_Element n_elem : n_class.GetFunca()){
-                        Element add_elem = doc.createElement(n_elem.GetName());
+                        Element add_elem = doc.createElement("newFunc");
                         add_elem.setAttribute("type", n_elem.GetType());
                         add_elem.setAttribute("access", n_elem.GetAccess());
                         add_elem.setAttribute("rtype", n_elem.GetReturnT());
+                        add_elem.setAttribute("zname", n_elem.GetName());
                         add_funcs.appendChild(add_elem);
                     }
                     add_class.appendChild(add_args);
@@ -118,19 +121,20 @@ public class FileHandler{
                 }
 
                 for (Bind n_bind : curClass.GetBinds()) {
-                    Element add_bind = doc.createElement(n_bind.GetName());
+                    Element add_bind = doc.createElement("newBind");
                     add_bind.setAttribute("c1", n_bind.Get_C1());
                     add_bind.setAttribute("c2", n_bind.Get_C2());
                     add_bind.setAttribute("lType",Integer.toString(n_bind.Type_Get_L()));
                     add_bind.setAttribute("rType",Integer.toString(n_bind.Type_Get_R()));
+                    add_bind.setAttribute("zname", n_bind.GetName());
 
                         Class n_elem = n_bind.GetClass1();
-                        Element add_c = doc.createElement(n_elem.GetName());
+                        Element add_c = doc.createElement("cOne");
                         add_c.setAttribute("id", Integer.toString(n_elem.GetId()));
                         add_bind.appendChild(add_c);
 
                         Class n_elem2 = n_bind.GetClass2();
-                        Element add_c2 = doc.createElement(n_elem2.GetName());
+                        Element add_c2 = doc.createElement("cTwo");
                         add_c2.setAttribute("id", Integer.toString(n_elem2.GetId()));
                         add_bind.appendChild(add_c2);
                     binds.appendChild(add_bind);
@@ -138,12 +142,13 @@ public class FileHandler{
 
                 for (SequenceDia sq : curClass.GetSeqD()){
                     sq.ReId();
-                    Element add_sequence_dia = doc.createElement(sq.GetName());
+                    Element add_sequence_dia = doc.createElement("Sequ");
+                    add_sequence_dia.setAttribute("zname", sq.GetName());
 
                     Element cast = doc.createElement("cast");
                     for (Actor a : sq.GetCast()){
 
-                        Element actor = doc.createElement(a.GetClass().GetName());
+                        Element actor = doc.createElement("Actor");
                         String s;
                         if(a.IsEternal())s="1";
                         else s="0";
@@ -156,7 +161,7 @@ public class FileHandler{
 
                     Element loveLetters = doc.createElement("messages");
                     for(Message m : sq.GetMessages()){
-                        Element message = doc.createElement(m.GetName());
+                        Element message = doc.createElement("NewMessage");
                         String s;
                         String c;
                         if(m.GetResponse())s="1";
@@ -169,6 +174,7 @@ public class FileHandler{
                         message.setAttribute("a2", Integer.toString(sq.GetCast().indexOf(m.GetA2())));
                         message.setAttribute("constructor", c);
                         message.setAttribute("text", m.GetText());
+                        message.setAttribute("zname", m.GetName());
                         
                         loveLetters.appendChild(message);
                     }
@@ -221,12 +227,12 @@ public class FileHandler{
                 NodeList argList = clssList.item(i).getChildNodes().item(0).getChildNodes();
                 NodeList funcList = clssList.item(i).getChildNodes().item(1).getChildNodes();
 
-                Class toAdd = toLoad.Class_Add( clssList.item(i).getNodeName());
+                Class toAdd = toLoad.Class_Add( clssList.item(i).getAttributes().item(3).getNodeValue());
                 toAdd.SetPos(Integer.parseInt( clssList.item(i).getAttributes().item(1).getNodeValue()),Integer.parseInt( clssList.item(i).getAttributes().item(2).getNodeValue()));
                 toAdd.SetId(Integer.parseInt(clssList.item(i).getAttributes().item(0).getNodeValue()));
 
                 for(int j = 0 ; j<argList.getLength();j++){
-                    CD_Element newElement = toAdd.addElement(argList.item(j).getNodeName());
+                    CD_Element newElement = toAdd.addElement(argList.item(j).getAttributes().item(2).getNodeValue());
                     newElement.ReType(argList.item(j).getAttributes().getNamedItem("type").getNodeValue());
                     if(argList.item(j).getAttributes().getNamedItem("access").getNodeValue().equals("public")){
                         newElement.SetType(AccesT.PUBLIC);
@@ -239,7 +245,7 @@ public class FileHandler{
                 }
 
                 for(int j = 0 ; j<funcList.getLength();j++){
-                    CD_Element newFunction = toAdd.addFunc(funcList.item(j).getNodeName());
+                    CD_Element newFunction = toAdd.addFunc(funcList.item(j).getAttributes().item(2).getNodeValue());
                     newFunction.ReType(funcList.item(j).getAttributes().getNamedItem("type").getNodeValue());
                     newFunction.SetReturnT(funcList.item(j).getAttributes().getNamedItem("rtype").getNodeValue());
                     if(funcList.item(j).getAttributes().getNamedItem("access").getNodeValue().equals("public")){                    
@@ -259,7 +265,7 @@ public class FileHandler{
                 NodeList elemsToAdd = bindList.item(i).getChildNodes();
                 //System.err.println(toLoad.GetClasses());
                 //System.err.println(Integer.parseInt(elemsToAdd.item(1).getAttributes().item(0).getNodeValue()));
-                Bind adder = new Bind(bindList.item(i).getNodeName(),
+                Bind adder = new Bind(bindList.item(i).getAttributes().item(4).getNodeValue(),
                                         toLoad.GetClasses().get(Integer.parseInt(elemsToAdd.item(0).getAttributes().item(0).getNodeValue())),
                                         toLoad.GetClasses().get(Integer.parseInt(elemsToAdd.item(1).getAttributes().item(0).getNodeValue())));
                 //System.err.println("here");
@@ -273,7 +279,7 @@ public class FileHandler{
             
 
             for(int i=0;i<seqDList.getLength();i++){
-                SequenceDia toAdd = new SequenceDia(seqDList.item(i).getNodeName(),toLoad);
+                SequenceDia toAdd = new SequenceDia(seqDList.item(i).getAttributes().item(0).getNodeValue(),toLoad);
                 NodeList acList = seqDList.item(i).getChildNodes().item(0).getChildNodes();
                 NodeList msList = seqDList.item(i).getChildNodes().item(1).getChildNodes();
                 for(int j = 0;j<acList.getLength();j++){
@@ -297,7 +303,8 @@ public class FileHandler{
                     if(a2n==-1)a2=null;
                     else a2=toAdd.GetCast().get(a2n);
                     if(fn==-1)func=null;
-                    else func = toLoad.Element_Get_By_Id(fn);
+                    else func = toAdd.GetPossibleFunctions(a2.GetClass()).get(fn);
+                    //toLoad.Element_Get_By_Id(fn);
                     toAdd.AddMessage(response, func, a1, a2,mc,text);
                 }
                 toLoad.SequenceDia_FAdd(toAdd);

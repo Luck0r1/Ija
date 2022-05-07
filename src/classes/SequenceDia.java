@@ -229,14 +229,16 @@ public class SequenceDia{
      * Repairs diagram after deletion
      */
     public void RepairDia(){
+        System.out.println(this.loveLetters.get(this.loveLetters.size()-1));
         List<Actor> toRemove = new ArrayList<Actor>();
         for(Actor a : this.GetCast()){
-            if(a.IsEternal() || GetFirstAppearance(a)==-1)continue;
+            if(a.IsEternal() )continue;
             if(!this.cd.GetClasses().contains(a.GetClass())){
                 toRemove.add(a);
                 continue;
             }
-            if(!this.loveLetters.get(GetFirstAppearance(a)).IsConstructor() )
+            
+            if(GetFirstAppearance(a)==-1 || (!this.loveLetters.get(GetFirstAppearance(a)).IsConstructor()) )
                 toRemove.add(a);
         }
         for(Actor a : toRemove){
