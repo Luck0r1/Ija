@@ -46,11 +46,14 @@ import javafx.scene.Group;
 
 import java.util.*;
 
+/**
+ * Creates pop up window for message editing
+ */
 public class MessagePopper implements EventHandler<ActionEvent>{
 
-    Button b_submiter;
-    Button b_remove;
-    TextField text_f;
+    private Button b_submiter;
+    private Button b_remove;
+    private TextField text_f;
 
     private Stage secondaryStage;
     private Message ms;
@@ -71,6 +74,10 @@ public class MessagePopper implements EventHandler<ActionEvent>{
         this.secondaryStage.show();
     }
 
+    /**
+     * Returns graphic interface
+     * @return
+     */
     private Pane GetViz(){
         Pane p = new Pane();
         p.setPrefWidth(200);
@@ -100,6 +107,10 @@ public class MessagePopper implements EventHandler<ActionEvent>{
         return p;
     }
 
+    /**
+     * Handles buttons
+     * @param event
+     */
     @Override
     public void handle(ActionEvent event){
         if(event.getSource()==this.b_remove){

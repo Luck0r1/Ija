@@ -36,6 +36,9 @@ import java.util.*;
 
 import javafx.geometry.Pos;
 
+/**
+ * Creates pop up window for renaming classes
+ */
 public class vPopper implements EventHandler<ActionEvent>{
 
     MainC backSide;
@@ -60,6 +63,10 @@ public class vPopper implements EventHandler<ActionEvent>{
         this.secondaryStage.show();
     }
 
+    /**
+     * Create pop up window
+     * @return
+     */
     private Scene popMaker(){
 
         VBox overlay = new VBox();
@@ -77,10 +84,12 @@ public class vPopper implements EventHandler<ActionEvent>{
         Scene popper = new Scene(overlay);
         return popper;
 
-    }
+    }   
 
-
-
+    /**
+     * Handles button function
+     * @param event
+     */
     @Override
     public void handle(ActionEvent event){
         if(event.getSource()==this.b_submitter){

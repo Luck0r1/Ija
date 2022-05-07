@@ -127,8 +127,9 @@ public class FileHandler{
                         Class n_elem = n_bind.GetClass1();
                         Element add_c = doc.createElement(n_elem.GetName());
                         add_c.setAttribute("id", Integer.toString(n_elem.GetId()));
+                        add_bind.appendChild(add_c);
 
-                        Class n_elem2 = n_bind.GetClass1();
+                        Class n_elem2 = n_bind.GetClass2();
                         Element add_c2 = doc.createElement(n_elem2.GetName());
                         add_c2.setAttribute("id", Integer.toString(n_elem2.GetId()));
                         add_bind.appendChild(add_c2);
@@ -215,6 +216,7 @@ public class FileHandler{
             NodeList bindList = doc.getDocumentElement().getChildNodes().item(1).getChildNodes();
             NodeList seqDList = doc.getDocumentElement().getChildNodes().item(2).getChildNodes();
 
+
             for(int i=0; i<clssList.getLength();i++ ){
                 NodeList argList = clssList.item(i).getChildNodes().item(0).getChildNodes();
                 NodeList funcList = clssList.item(i).getChildNodes().item(1).getChildNodes();
@@ -250,12 +252,17 @@ public class FileHandler{
                     }
                 }
             }
+            
 
             for(int i=0; i<bindList.getLength();i++ ){
+                //System.err.println("here");
                 NodeList elemsToAdd = bindList.item(i).getChildNodes();
+                //System.err.println(toLoad.GetClasses());
+                //System.err.println(Integer.parseInt(elemsToAdd.item(1).getAttributes().item(0).getNodeValue()));
                 Bind adder = new Bind(bindList.item(i).getNodeName(),
-                                        toLoad.Class_Get_By_Id(Integer.parseInt(elemsToAdd.item(0).getAttributes().item(0).getNodeValue())),
-                                        toLoad.Class_Get_By_Id(Integer.parseInt(elemsToAdd.item(1).getAttributes().item(0).getNodeValue())));
+                                        toLoad.GetClasses().get(Integer.parseInt(elemsToAdd.item(0).getAttributes().item(0).getNodeValue())),
+                                        toLoad.GetClasses().get(Integer.parseInt(elemsToAdd.item(1).getAttributes().item(0).getNodeValue())));
+                //System.err.println("here");
                 adder.Set_C1(bindList.item(i).getAttributes().item(0).getNodeName());
                 adder.Set_C2(bindList.item(i).getAttributes().item(1).getNodeName());
                 adder.Type_Set_L(Integer.parseInt(bindList.item(i).getAttributes().item(2).getNodeValue()));  
@@ -263,6 +270,7 @@ public class FileHandler{
                 toLoad.Bind_FAdd(adder);
                 
             }
+            
 
             for(int i=0;i<seqDList.getLength();i++){
                 SequenceDia toAdd = new SequenceDia(seqDList.item(i).getNodeName(),toLoad);
@@ -281,7 +289,7 @@ public class FileHandler{
                     Boolean mc = (Integer.parseInt(msList.item(j).getAttributes().item(2).getNodeValue())==1);
                     String text = msList.item(j).getAttributes().item(5).getNodeValue();
                     CD_Element func;
-                    System.out.print(mc);
+                    //System.out.print(mc);
                     Actor a1;
                     Actor a2;
                     if(a1n==-1)a1=null;
@@ -298,6 +306,7 @@ public class FileHandler{
             return toLoad;
         } catch (Exception e) {
             //TODO: handle exception
+            System.err.println(e);
             System.exit(1);
             return null;
         }

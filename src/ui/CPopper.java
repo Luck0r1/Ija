@@ -44,19 +44,22 @@ import java.util.*;
 
 import javafx.geometry.Pos;
 
+/**
+ * Creates pop up window for selecting class
+ */
 public class CPopper implements EventHandler<ActionEvent>{
 
-    MainC backSide;
+    private MainC backSide;
 
-    ClassController toSave;
+    private ClassController toSave;
 
-    Stage secondaryStage;
+    private Stage secondaryStage;
 
-    TextField namer;
+    private TextField namer;
 
-    Button b_submitter;
+    private Button b_submitter;
 
-    classes.Class edditedC;
+    private classes.Class edditedC;
 
     public CPopper(MainC backSide,ClassController calledByGrave,classes.Class editedC){
         this.backSide = backSide;
@@ -69,6 +72,10 @@ public class CPopper implements EventHandler<ActionEvent>{
         this.secondaryStage.show();
     }
 
+    /**
+     * Creates graphical window
+     * @return
+     */
     private Scene popMaker(){
 
         VBox overlay = new VBox();
@@ -87,9 +94,11 @@ public class CPopper implements EventHandler<ActionEvent>{
         return popper;
 
     }
-
-
-
+    
+    /**
+     * Handles buttons
+     * @param event
+     */
     @Override
     public void handle(ActionEvent event){
         if(event.getSource()==this.b_submitter){

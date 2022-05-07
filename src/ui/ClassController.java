@@ -24,6 +24,9 @@ import classes.Class;
 import classes.MainC;
 import support.Delta;
 
+/**
+ * This class handles inner setting of class diagram
+ */
 public class ClassController implements EventHandler<ActionEvent>{
 
     public Button deleteClass;
@@ -47,10 +50,17 @@ public class ClassController implements EventHandler<ActionEvent>{
         this.main = main;
     }
 
+    /**
+     * Returns graphical interface
+     * @return
+     */
     public VBox GetDrawn(){
         return this.drawnClass;
     }
-
+    /**
+     * Draws grpahical representation class
+     * @return
+     */
     private VBox DrawClass(){
 
         this.edditArgButts = new ArrayList<Button>();
@@ -127,11 +137,16 @@ public class ClassController implements EventHandler<ActionEvent>{
 
         return newClass;
     }
-
+    /**
+     * Refreshes class
+     */
     public void Refresh(){
         this.main.Refresh();
     }
-
+    /**
+     * handles buttons
+     * @param event
+     */
     @Override
     public void handle(ActionEvent event){
         if(event.getSource()==this.newArg){

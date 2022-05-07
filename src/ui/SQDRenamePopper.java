@@ -44,17 +44,20 @@ import java.util.*;
 
 import javafx.geometry.Pos;
 
+/**
+ * Creates popup window for renaming sequence diagrams
+ */
 public class SQDRenamePopper implements EventHandler<ActionEvent>{
 
-    MainC backSide;
+    private MainC backSide;
 
-    Stage secondaryStage;
+    private Stage secondaryStage;
 
-    TextField namer;
+    private TextField namer;
 
-    Button b_submitter;
+    private Button b_submitter;
 
-    SequenceDia sq;
+    private SequenceDia sq;
 
     public SQDRenamePopper(MainC backSide,SequenceDia sq){
         this.backSide = backSide;
@@ -66,6 +69,10 @@ public class SQDRenamePopper implements EventHandler<ActionEvent>{
         this.secondaryStage.show();
     }
 
+    /**
+     * Creates graphical component
+     * @return
+     */
     private Scene popMaker(){
 
         VBox overlay = new VBox();
@@ -85,8 +92,10 @@ public class SQDRenamePopper implements EventHandler<ActionEvent>{
 
     }
 
-
-
+    /**
+     * Handles buttons
+     * @param event
+     */
     @Override
     public void handle(ActionEvent event){
         if(event.getSource()==this.b_submitter){

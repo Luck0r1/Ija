@@ -27,6 +27,9 @@ import classes.*;
 import ui.*;
 import support.*;
 
+/**
+ * This class is used to generate the bind graphic representation and hendles its buttons
+ */
 public class BindController implements EventHandler<ActionEvent>{
 
     public Button c1;
@@ -47,6 +50,12 @@ public class BindController implements EventHandler<ActionEvent>{
         this.main = main;
     }
 
+    /**
+     * Returns Graphic representation of class diagram bind
+     * @param tar
+     * @param maii
+     * @return
+     */
     private Group GetLine(Bind tar,MainC maii){
         Group returner = new Group();
 
@@ -92,20 +101,30 @@ public class BindController implements EventHandler<ActionEvent>{
 
         return returner;
     }
-
+    /**
+     * Returns drawn line
+     * @return
+     */
     public Group GetDrawn(){
         return this.drawnBind;
     }
-
+    /**
+     * Calls for refresh function
+     */
     public void Refresh(){
         this.main.Refresh();
     }
-
+    /**
+     * Deletes bind and refreshes
+     */
     public void SendToTheRaveYard(){
         this.editedCD.Bind_Delete(this.curB);
         this.main.Refresh();
     }
-
+    /**
+     * Handles button presses
+     * @param event
+     */
     @Override
     public void handle(ActionEvent event){
         bPopper pop = new bPopper(this.main, this,this.curB);
@@ -113,5 +132,5 @@ public class BindController implements EventHandler<ActionEvent>{
 
     }
 
-    class Delta { double x, y; }
+    
 }

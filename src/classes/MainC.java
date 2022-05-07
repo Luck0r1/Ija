@@ -53,52 +53,65 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
 
+/**
+ * Main class is the main class of program that is made and called directly from FireStareter class, where main is located
+ * This function also refreshes main screen, and is alsom responsible for load menu functions. (This was not moved because of time constraints).
+ * 
+ */
 public class MainC extends Application implements EventHandler<ActionEvent>{
 
     public FileHandler fh;
-    ClassDiagram curClass;
+    public ClassDiagram curClass;
 
-    Line drawer;
+    private Line drawer;
 
-    Stage primaryStage;
-    String pathway="./../data";
+    private Stage primaryStage;
+    private String pathway="./../data";
 
-    Group drawerG;
+    private Group drawerG;
 
     //Small menu
-    Button addClassDiagram;
-    List<Button> loadClassButtons;
-    List<Button> renameClasButtons;
-    List<Button> deleteClassButtons;
+    private Button addClassDiagram;
+    private List<Button> loadClassButtons;
+    private List<Button> renameClasButtons;
+    private List<Button> deleteClassButtons;
 
     //Side menu
-    Button sb_addDia;
-    List<Button> sb_loadDia;
-    List<Button> sb_renameDia;
-    List<Button> sb_removeDia;
+    private Button sb_addDia;
+    private List<Button> sb_loadDia;
+    private List<Button> sb_renameDia;
+    private List<Button> sb_removeDia;
 
-    List<Button> removeClass;
+    private List<Button> removeClass;
 
-    Button b_AddClass;
-    Button b_Save;
+    private Button b_AddClass;
+    private Button b_Save;
 
-    Button b_debug;
-    boolean in_debug=false;
+    private Button b_debug;
+    private boolean in_debug=false;
 
     private SequenceDiaInterface sqi;
 
     public Mapper mapper;
 
-    int dimX=1920;
-    int dimY=1080;
+    private int dimX=1920;
+    private int dimY=1080;
 
-    ProgramState pState = ProgramState.SMALLMENU;
+    private ProgramState pState = ProgramState.SMALLMENU;
 
+    /**
+     * Called from main, launches application
+     * @param args
+     */
     public void FireStarter(String[] args) {
         launch(args);
     }
 
-    /*Small menu functions*/
+    /**
+     * Loads list of data files
+     * @param dir directory from which to load
+     * @return List<String> of files
+     */
     private List<String> listFilesUsingJavaIO(String dir) {
         List<String> retNames = new ArrayList<String>();
         for (File phil : new File(dir).listFiles()){
@@ -107,6 +120,10 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         return retNames;
     }
 
+    /**
+     * This function builds the small menu
+     * @return
+     */
     private Scene UpdateFList(){
         this.loadClassButtons=new ArrayList<Button>();
         this.renameClasButtons=new ArrayList<Button>();
@@ -143,7 +160,10 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         return nScene;
     }
     
-
+    /**
+     * This builds up side menu which loads sequence diagrams
+     * @return VBox with menu
+     */
     private VBox GetSideMenu(){
         VBox v = new VBox();
         v.setPrefWidth(300);
@@ -190,6 +210,10 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         return v;
     }
 
+    /**
+     * Builds up main stage 
+     * @return Pane with main class diagram scene
+     */
     private Pane LoadStage(){
         this.removeClass = new ArrayList<Button>();
 
@@ -305,6 +329,9 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         return layout;
     }
 
+    /**
+     * Refreshes mainscreen to class diagram screen
+     */
     public void Refresh(){
         Pane layout = this.LoadStage();
         Scene newScene = new Scene(layout,this.dimX,this.dimY);
@@ -316,6 +343,9 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         this.primaryStage.show();
     }
 
+    /**
+     * Loads up my debug screen
+     */
     public void DebugRefresh(){
         this.mapper.DebugFillCons(this.curClass);
         Pane layout = this.mapper.DebugMap();
@@ -327,6 +357,10 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         this.primaryStage.setScene(newScene);
     }
 
+    /**
+     * Refreshes sequence diagram screen
+     * @param sq
+     */
     public void SequenceRefresh(SequenceDia sq){
         sq.RepairDia();
         Group layout = this.sqi.GetDrawn();
@@ -337,17 +371,30 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         this.primaryStage.show();
     }
 
+    /**
+     * Loads given sequence diagram
+     * @param sq
+     */
     public void SequenceLoad(SequenceDia sq){
         this.sqi = new SequenceDiaInterface(this,this.curClass,sq, this.dimX, this.dimY);
         this.SequenceRefresh(sq);
     }
 
+    /**
+     * Refreshes file list menu
+     */
     public void SmallRefresh(){
         Scene newScene = this.UpdateFList();
         this.primaryStage.setScene(newScene);
         this.primaryStage.show();
     }
 
+    /**
+     * Returns connecting point of given class, this is used for automated building of classes
+     * @param x
+     * @param c
+     * @return
+     */
     private Dimension GetConPoint(Side x, classes.Class c){
         Dimension pair = new Dimension();
         if(x==Side.TOP){
@@ -365,11 +412,10 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         return pair;
     }
 
-    private Group DrawLines(){
-        return null;
-    }
-
-
+    /**
+     * Refreshes lines in class diagram
+     * @return
+     */
     public Group RefreshLines(){
         Group newGr = new Group();
         for(classes.Class c : this.curClass.GetClasses()){
@@ -388,6 +434,11 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         return newGr;
     }
 
+    /**
+     * This ovveride is main preparation function
+     * @param primaryStage
+     * @throws Exception
+     */
     @Override
     public void start(Stage primaryStage) throws Exception{        
         primaryStage.setTitle("Dia Builder");
@@ -401,6 +452,10 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
         this.primaryStage=primaryStage;
     }
 
+    /**
+     * This handless all global buttons in file menu and class diagram menu (again, this should be moved)
+     * @param event
+     */
     @Override
     public void handle(ActionEvent event){
 

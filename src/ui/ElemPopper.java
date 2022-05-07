@@ -50,30 +50,33 @@ import java.io.File;
 
 import javafx.geometry.Pos;
 
+/**
+ * This class handles popup window for element editing
+ */
 public class ElemPopper implements EventHandler<ActionEvent>{
 
-    MainC backSide;
+    private MainC backSide;
 
-    CD_Element toEdit;
-    ClassController toSave;
+    private CD_Element toEdit;
+    private ClassController toSave;
 
-    Stage secondaryStage;
+    private Stage secondaryStage;
 
-    Button b_isArg;
-    Button b_isFunc;
-    Button b_isPType;
-    Button b_isLType;
-    Button b_isKType;
+    private Button b_isArg;
+    private Button b_isFunc;
+    private Button b_isPType;
+    private Button b_isLType;
+    private Button b_isKType;
 
-    Button b_submitter;
+    private Button b_submitter;
 
-    classes.Class edditedC;
+    private classes.Class edditedC;
 
-    TextField namer;
-    TextField typer;
-    TextField rTyper;
+    private TextField namer;
+    private TextField typer;
+    private TextField rTyper;
 
-    String voider;
+    private String voider;
 
     public ElemPopper(MainC backSide,ClassController calledByGrave,classes.Class editedC, CD_Element reCaller){
         this.backSide = backSide;
@@ -87,6 +90,10 @@ public class ElemPopper implements EventHandler<ActionEvent>{
         this.secondaryStage.show();
     }
 
+    /**
+     * Creates popup window for element editting
+     * @return
+     */
     private Scene popMaker(){
 
         VBox overlay = new VBox();
@@ -165,6 +172,9 @@ public class ElemPopper implements EventHandler<ActionEvent>{
 
     }
 
+    /**
+     * Set input fields to elemnt
+     */
     public void SetFields(){
         this.toEdit.ReName(this.namer.getText());
         this.toEdit.ReType(this.typer.getText());
@@ -172,6 +182,10 @@ public class ElemPopper implements EventHandler<ActionEvent>{
         this.toEdit.SetReturnT(this.rTyper.getText());
     }
 
+    /**
+     * Handle buutps
+     * @param event
+     */
     @Override
     public void handle(ActionEvent event){
         this.SetFields();

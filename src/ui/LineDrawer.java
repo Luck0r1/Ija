@@ -50,8 +50,15 @@ import classes.*;
 import support.*;
 import ui.*;
 
+/**
+ * This class handles drawing 
+ */
 public class LineDrawer{
-    
+    /**
+     * Draws vertical segment
+     * @param LM_pos
+     * @return
+     */
     private Group DrawVertical(Dimension LM_pos){
         Group g = new Group();
         double LM_Pos_x = LM_pos.getWidth();
@@ -65,7 +72,11 @@ public class LineDrawer{
 
         return g;
     }
-
+    /**
+     * Draws horizontal segment
+     * @param LM_pos
+     * @return
+     */
     private Group DrawHorizontal(Dimension LM_pos){
         Group g = new Group();
         double LM_Pos_x = LM_pos.getWidth();
@@ -80,126 +91,11 @@ public class LineDrawer{
         return g;
     }
 
-    private Group DrawNine(Dimension LM_pos){
-        Group g = new Group();
-
-        Line l1 = new Line();
-        Line l2 = new Line();
-
-        double LM_Pos_x = LM_pos.getWidth();
-        double LM_Pos_y = LM_pos.getHeight();
-
-        l1.setStartX(LM_Pos_x);
-        l1.setStartY(LM_Pos_y+2.5);
-        l1.setEndX(LM_Pos_x+2.5);
-        l1.setEndY(LM_Pos_y+2.5);
-
-        l2.setStartX(LM_Pos_x+2.5);
-        l2.setStartY(LM_Pos_y+2.5);
-        l2.setEndX(LM_Pos_x+2.5);
-        l2.setEndY(LM_Pos_y);        
-
-        g.getChildren().addAll(l1,l2);
-
-        return g;
-    }
-
-    private Group DrawThree(Dimension LM_pos){
-        Group g = new Group();
-
-        Line l1 = new Line();
-        Line l2 = new Line();
-
-        double LM_Pos_x = LM_pos.getWidth();
-        double LM_Pos_y = LM_pos.getHeight();
-
-        l1.setStartX(LM_Pos_x+2.5);
-        l1.setStartY(LM_Pos_y);
-        l1.setEndX(LM_Pos_x+2.5);
-        l1.setEndY(LM_Pos_y+2.5);
-
-        l2.setStartX(LM_Pos_x+2.5);
-        l2.setStartY(LM_Pos_y+2.5);
-        l2.setEndX(LM_Pos_x+5);
-        l2.setEndY(LM_Pos_y+2.5);        
-
-        g.getChildren().addAll(l1,l2);
-
-        return g;
-    }
-
-    private Group DrawOPThree(Dimension LM_pos){
-        Group g = new Group();
-
-        Line l1 = new Line();
-        Line l2 = new Line();
-
-        double LM_Pos_x = LM_pos.getWidth();
-        double LM_Pos_y = LM_pos.getHeight();
-
-        l1.setStartX(LM_Pos_x+2.5);
-        l1.setStartY(LM_Pos_y+2.5);
-        l1.setEndX(LM_Pos_x+5);
-        l1.setEndY(LM_Pos_y+2.5);
-
-        l2.setStartX(LM_Pos_x+2.5);
-        l2.setStartY(LM_Pos_y+2.5);
-        l2.setEndX(LM_Pos_x+2.5);
-        l2.setEndY(LM_Pos_y+5);        
-
-        g.getChildren().addAll(l1,l2);
-
-        return g;
-    }
-
-    private Group DrawOPNine(Dimension LM_pos){
-        Group g = new Group();
-
-        Line l1 = new Line();
-        Line l2 = new Line();
-
-        double LM_Pos_x = LM_pos.getWidth();
-        double LM_Pos_y = LM_pos.getHeight();
-
-        l1.setStartX(LM_Pos_x);
-        l1.setStartY(LM_Pos_y+2.5);
-        l1.setEndX(LM_Pos_x+2.5);
-        l1.setEndY(LM_Pos_y+2.5);
-
-        l2.setStartX(LM_Pos_x+2.5);
-        l2.setStartY(LM_Pos_y+2.5);
-        l2.setEndX(LM_Pos_x+2.5);
-        l2.setEndY(LM_Pos_y+5);        
-
-        g.getChildren().addAll(l1,l2);
-
-        return g;
-    }
-
-    private Group DrawX(Dimension LM_pos){
-        Group g = new Group();
-
-        Line l1 = new Line();
-        Line l2 = new Line();
-
-        double LM_Pos_x = LM_pos.getWidth();
-        double LM_Pos_y = LM_pos.getHeight();
-
-        l1.setStartX(LM_Pos_x+2.5);
-        l1.setStartY(LM_Pos_y);
-        l1.setEndX(LM_Pos_x+2.5);
-        l1.setEndY(LM_Pos_y+5);
-
-        l2.setStartX(LM_Pos_x);
-        l2.setStartY(LM_Pos_y+2.5);
-        l2.setEndX(LM_Pos_x+5);
-        l2.setEndY(LM_Pos_y+2.5);
-
-        g.getChildren().addAll(l1,l2);
-
-        return g;
-    }
-
+    /**
+     * Draws long horizontal line
+     * @param LM_pos
+     * @return
+     */
     private Group DrawLongHorizontal(Dimension LM_pos){
         Group g = new Group();
 
@@ -217,7 +113,11 @@ public class LineDrawer{
 
         return g;
     }
-
+    /**
+     * Draws long vertiacl line
+     * @param LM_pos
+     * @return
+     */
     private Group DrawLongVertical(Dimension LM_pos){
         Group g = new Group();
 
@@ -236,6 +136,11 @@ public class LineDrawer{
         return g;
     }
 
+    /**
+     * Draws generaliztion arrow down
+     * @param LM_pos
+     * @return
+     */
     private Group DrawArrowDown(Dimension LM_pos){
         Group g = new Group();
 
@@ -265,7 +170,11 @@ public class LineDrawer{
 
         return g;
     }
-
+    /**
+     * Draws generaliztion arrow left
+     * @param LM_pos
+     * @return
+     */
     private Group DrawArrowLeft(Dimension LM_pos){
         Group g = new Group();
 
@@ -296,6 +205,11 @@ public class LineDrawer{
         return g;
     }
 
+    /**
+     * Draws generaliztion arrow rigth
+     * @param LM_pos
+     * @return
+     */
     private Group DrawArrowRigth(Dimension LM_pos){
         Group g = new Group();
 
@@ -326,6 +240,11 @@ public class LineDrawer{
         return g;
     }
 
+    /**
+     * Draws generaliztion arrow up
+     * @param LM_pos
+     * @return
+     */
     private Group DrawArrowUp(Dimension LM_pos){
         Group g = new Group();
 
@@ -356,6 +275,11 @@ public class LineDrawer{
         return g;
     }
 
+    /**
+     * Draws turns and intersections
+     * @param LM_pos
+     * @return
+     */
     private Group DrawTurn(Dimension LM_pos){
         Group g = new Group();
 
@@ -376,6 +300,12 @@ public class LineDrawer{
         return g;
     }
 
+    /**
+     * Draws agregation
+     * @param LM_pos
+     * @param fill
+     * @return
+     */
     private Group DrawSquare(Dimension LM_pos,boolean fill){
         Group g = new Group();
 
@@ -399,6 +329,12 @@ public class LineDrawer{
         return g;
     }
 
+    /**
+     * case that relegates drawn element
+     * @param num
+     * @param LM_pos
+     * @return
+     */
     public Group DrawXY(int num,Dimension LM_pos){
         Side sides[] = {Side.LEFT,Side.TOP,Side.RIGHT,Side.BOTTOM};
         switch (num) {
@@ -467,7 +403,7 @@ public class LineDrawer{
                 return DrawSquare(LM_pos, true);
 
             default:
-                return DrawX(LM_pos);
+                return DrawTurn(LM_pos);
         }
     }
 

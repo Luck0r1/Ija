@@ -27,6 +27,9 @@ import classes.ClassDiagram;
 import classes.SequenceDia;
 import classes.Actor;
 
+/**
+ * Creates pop up window for creating class
+ */
 public class SQ_ClassPopper implements EventHandler<ActionEvent>{
 
     private List<Button> buttons;
@@ -59,7 +62,11 @@ public class SQ_ClassPopper implements EventHandler<ActionEvent>{
         this.secondaryStage.setAlwaysOnTop(true);
         this.secondaryStage.show();
     }
-
+    /**
+     * Creates graphical element
+     * @param cd
+     * @return
+     */
     VBox Chooser(ClassDiagram cd){
         List<classes.Class> classList = cd.GetClasses();
         VBox v = new VBox();
@@ -78,6 +85,10 @@ public class SQ_ClassPopper implements EventHandler<ActionEvent>{
         
     }
 
+    /**
+     * Handles buttons
+     * @param event
+     */
     @Override
     public void handle(ActionEvent event){
         int i=0;
@@ -86,7 +97,9 @@ public class SQ_ClassPopper implements EventHandler<ActionEvent>{
                 this.secondaryStage.close();
                 Actor a = this.sq.AddActor(this.cd.GetClasses().get(i),this.makeEternal);
                 if(!this.makeEternal){
-                    SQ_FuncPopper sPop = new SQ_FuncPopper(this.sqd, this.sourceA, a, this.sq,true);
+                    this.sqd.AddMessage(true, null, this.sourceA, a,true,"");
+                    this.sq.Refresh();
+                    //SQ_FuncPopper sPop = new SQ_FuncPopper(this.sqd, this.sourceA, a, this.sq,true);
                 }
                 break;
             }

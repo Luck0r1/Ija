@@ -40,6 +40,9 @@ import javafx.scene.text.FontWeight;
 
 import javafx.scene.layout.Pane;
 
+/**
+ * Creates pop up window for adding to sequence diagram
+ */
 public class SQ_FuncPopper implements EventHandler<ActionEvent>{
 
     
@@ -77,11 +80,16 @@ public class SQ_FuncPopper implements EventHandler<ActionEvent>{
         this.secondaryStage.show();
     }
 
-    
+    /**
+     * Creates graphical interface
+     * @param target
+     * @return
+     */
     VBox Chooser(Actor target){
         List<CD_Element> funcList;
         if(target != null){
-            funcList= target.GetClass().GetFunca();
+            funcList = this.sq.GetPossibleFunctions(target.GetClass());
+            //funcList= target.GetClass().GetFunca();
         }else{
             funcList = new ArrayList<CD_Element>();
         }
@@ -90,7 +98,7 @@ public class SQ_FuncPopper implements EventHandler<ActionEvent>{
         int widthOfButt = 200;
         v.setPrefHeight(funcList.size()*heightOfButt);
         for(CD_Element elem: funcList){
-            Button b = new Button(target.GetClass().GetName());
+            Button b = new Button(elem.GetName());
             b.setOnAction(this);
             b.setPrefWidth(widthOfButt);
             b.setPrefHeight(heightOfButt);
@@ -106,6 +114,10 @@ public class SQ_FuncPopper implements EventHandler<ActionEvent>{
         return v;
         
     }
+    /**
+     * Handles buttons
+     * @param event
+     */
     @Override
     public void handle(ActionEvent event){
         for(int i = 0;i<this.f_buttons.size();i++){
@@ -113,7 +125,7 @@ public class SQ_FuncPopper implements EventHandler<ActionEvent>{
                 if(i==this.f_buttons.size()-1){
                     this.sq.AddMessage(true, null, this.source, this.target,constructor,"");
                 }else{
-                    this.sq.AddMessage(false, this.target.GetClass().GetFunca().get(i), this.source, this.target,constructor,"");
+                    this.sq.AddMessage(false, this.sq.GetPossibleFunctions(target.GetClass()).get(i), this.source, this.target,constructor,"");
                 }
                 this.responder.Refresh();
                 this.secondaryStage.close();

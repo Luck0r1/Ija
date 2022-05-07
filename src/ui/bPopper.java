@@ -51,38 +51,41 @@ import java.io.File;
 
 import javafx.geometry.Pos;
 
+/**
+ * Creates pop up window for editing class diagram relations
+ */
 public class bPopper implements EventHandler<ActionEvent>{
 
-    MainC backSide;
+    private MainC backSide;
 
-    BindController toSave;
+    private BindController toSave;
 
-    Stage secondaryStage;
+    private Stage secondaryStage;
 
-    TextField namer;
-    TextField c1;
-    TextField c2;
+    private TextField namer;
+    private TextField c1;
+    private TextField c2;
 
-    Button b_submitter;
-    Button b_deleter;
+    private Button b_submitter;
+    private Button b_deleter;
 
-    Button b_l_association;
-    Button b_r_association;
-    Button b_l_multiAssoc;
-    Button b_r_multiAssoc;
-    Button b_l_Gener;
-    Button b_r_Gener;
-    Button b_l_GenerFiller;
-    Button b_r_GenerFiller;
-    Button b_l_Agreg;
-    Button b_r_Agreg;
-    Button b_l_AgregFill;
-    Button b_r_AgregFill;
+    private Button b_l_association;
+    private Button b_r_association;
+    private Button b_l_multiAssoc;
+    private Button b_r_multiAssoc;
+    private Button b_l_Gener;
+    private Button b_r_Gener;
+    private Button b_l_GenerFiller;
+    private Button b_r_GenerFiller;
+    private Button b_l_Agreg;
+    private Button b_r_Agreg;
+    private Button b_l_AgregFill;
+    private Button b_r_AgregFill;
 
-    Bind editedBind;
+    private Bind editedBind;
 
-    int temptypeL;
-    int temptypeR;
+    private int temptypeL;
+    private int temptypeR;
 
     public bPopper(MainC backSide,BindController calledByGrave,Bind editedB){
         this.backSide = backSide;
@@ -96,7 +99,11 @@ public class bPopper implements EventHandler<ActionEvent>{
         this.secondaryStage.setAlwaysOnTop(true);
         this.secondaryStage.show();
     }
-
+    /**
+     * Gets list of relation types buttons
+     * @param side
+     * @return
+     */
     private VBox GetButtonList(boolean side){
         Button b1 = new Button("Association");
         Button b2 = new Button("M. Association");
@@ -121,6 +128,10 @@ public class bPopper implements EventHandler<ActionEvent>{
         return returner;
     }
 
+    /**
+     * Creates pop up window interface
+     * @return
+     */
     private Scene popMaker(){
 
         VBox overlay = new VBox();
@@ -161,8 +172,10 @@ public class bPopper implements EventHandler<ActionEvent>{
 
     }
 
-
-
+    /**
+     * Handles buttons
+     * @param event
+     */
     @Override
     public void handle(ActionEvent event){
         if(event.getSource()==this.b_submitter){

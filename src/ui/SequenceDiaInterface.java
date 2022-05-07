@@ -43,6 +43,9 @@ import javafx.geometry.Pos;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.Group; 
 
+/**
+ * Class that handles loaded sequence diagram. Such classes were planned also for file handeling and class diagram handling 
+ */
 public class SequenceDiaInterface implements EventHandler<ActionEvent>{
     private SequenceDia sq;
     private ClassDiagram workingDia;
@@ -54,7 +57,7 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
     private Button add_Actor;
     private List<Button> remove_butts;
     private List<Button> sendMesbutts;
-    List<Pane> highlighPanes;
+    private List<Pane> highlighPanes;
     private List<Button> messButtons;
 
     private int heightDistance=40;
@@ -67,6 +70,10 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         this.dimY=dimY;
     }
 
+    /**
+     * Generates inactive part of sequence diagram
+     * @return
+     */
     private Group GenerateInActive(){
         Line l = new Line();
         l.setStartX(2.5);
@@ -77,6 +84,11 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         return g;
     }
 
+    /**
+     * Generates active part of sequence diagram
+     * @param type
+     * @return
+     */
     private Group GenerateActive(ChunkType type){
         Group g = new Group();
         Pane p = new Pane();
@@ -109,6 +121,11 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         return g;
     }
 
+    /**
+     * Generates chunk of sequence diagram
+     * @param type
+     * @return
+     */
     private Group GenerateChunk(ChunkType type){
         if(type == ChunkType.EMPTY){
             return GenerateInActive();
@@ -117,6 +134,16 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         }
     }
 
+    /**
+     * Generates graphic represesntation of message
+     * @param startX
+     * @param startY
+     * @param endX
+     * @param endY
+     * @param dotted
+     * @param m
+     * @return
+     */
     private Group GenerateArrow(int startX,int startY,int endX,int endY, boolean dotted,Message m){
         boolean dir_reverse = (startX<endX);
 
@@ -156,6 +183,15 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         return g;
     }
 
+    /**
+     * Generates graphic representation of class
+     * @param name
+     * @param headerHeigth
+     * @param slotWidth
+     * @param collumn
+     * @param offSet
+     * @return
+     */
     private Pane GetHead(String name,int headerHeigth,int slotWidth,int collumn, int offSet){
         Pane bckg = new Pane();
         bckg.setPrefWidth(slotWidth-40);
@@ -204,6 +240,12 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         return bckg;
     }
 
+    /**
+     * Generates all mesagess
+     * @param headerHeigth
+     * @param actorWidth
+     * @return
+     */
     private Group GetArrows(int headerHeigth,int actorWidth){
         Group returner = new Group();
         List<Message> msList = this.sq.GetMessages();
@@ -228,6 +270,9 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         return returner;
     }
 
+    /**
+     * Draws interface
+     */
     private void DrawInterface(){
         this.remove_butts = new ArrayList<Button>();
         this.sendMesbutts = new ArrayList<Button>();
@@ -420,22 +465,39 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
         this.gui = g;
     }
 
+    /**
+     * Refreshes and returns drawn interface
+     * @return
+     */
     public Group GetDrawn(){
         this.DrawInterface();
         return this.gui;
     }
 
+    /**
+     * Adds new class to diagram
+     * @param c
+     * @param eternal
+     * @return
+     */
     public Actor AddActor(classes.Class c,boolean eternal){
         Actor a = this.sq.AddActor(c,eternal);
         this.Refresh();
         return a;
     }
 
+    /**
+     * Refreshes the diagram
+     */
     public void Refresh(){
         this.DrawInterface();
         this.responder.SequenceRefresh(sq);
     }
 
+    /**
+     * Handles buttons
+     * @param event
+     */
     @Override
     public void handle(ActionEvent event){
         if(event.getSource()==this.b_return){
@@ -463,6 +525,9 @@ public class SequenceDiaInterface implements EventHandler<ActionEvent>{
     }
 }
 
+/**
+ * Helpful enum for types of line chunks
+ */
 enum ChunkType{
     EMPTY,
     FULL,

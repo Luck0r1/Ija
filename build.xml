@@ -29,7 +29,7 @@
   </target>
 
   <!-- Target for compiling libs-->
-  <target name="compile-libs" depends="delete-previous">
+  <target name="compile-libs" depends="clean,delete-previous,download">
 	<javac srcdir="./src/" destdir="./build" classpath="./lib/javafx-sdk-18/lib/javafx.base.jar">
 		<compilerarg line="--module-path lib/javafx-sdk-18/lib/ --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web -Xlint:unchecked"/>
 	</javac>
