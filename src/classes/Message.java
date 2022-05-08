@@ -3,6 +3,7 @@ package classes;
 import classes.*;
 /**
  * Class that stores information about single message
+ * @author xmacej03
  */
 public class Message{
 

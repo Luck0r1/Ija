@@ -12,6 +12,7 @@ import classes.CD_Element;
 
 /**
  * Stores information about single class
+ * @author xlukac16
  */
 public class Class{
 

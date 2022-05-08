@@ -29,6 +29,7 @@ import support.*;
 
 /**
  * This class is used to generate the bind graphic representation and hendles its buttons
+ * @author xlukac16
  */
 public class BindController implements EventHandler<ActionEvent>{
 

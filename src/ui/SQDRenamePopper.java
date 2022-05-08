@@ -46,6 +46,7 @@ import javafx.geometry.Pos;
 
 /**
  * Creates popup window for renaming sequence diagrams
+ * @author xmacej03
  */
 public class SQDRenamePopper implements EventHandler<ActionEvent>{
 

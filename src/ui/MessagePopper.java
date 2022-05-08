@@ -48,6 +48,7 @@ import java.util.*;
 
 /**
  * Creates pop up window for message editing
+ * @author xmacej03
  */
 public class MessagePopper implements EventHandler<ActionEvent>{
 

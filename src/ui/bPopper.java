@@ -53,6 +53,7 @@ import javafx.geometry.Pos;
 
 /**
  * Creates pop up window for editing class diagram relations
+ * @author xlukac16
  */
 public class bPopper implements EventHandler<ActionEvent>{
 

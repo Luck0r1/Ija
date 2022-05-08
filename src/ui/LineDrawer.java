@@ -52,6 +52,7 @@ import ui.*;
 
 /**
  * This class handles drawing 
+ * @author xlukac16
  */
 public class LineDrawer{
     /**

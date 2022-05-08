@@ -52,6 +52,7 @@ import javafx.geometry.Pos;
 
 /**
  * This class handles popup window for element editing
+ * @author xlukac16
  */
 public class ElemPopper implements EventHandler<ActionEvent>{
 

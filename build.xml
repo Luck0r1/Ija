@@ -44,7 +44,7 @@
   </target>
 
   <target name="jar" depends="compile">
-    <jar destfile="./dest/app.jar" basedir="./build" >
+    <jar destfile="./dest/ija-app.jar" basedir="./build" >
     <zipgroupfileset dir="./lib/javafx-sdk-18/lib/" includes="*.*.jar" />
       <manifest>
         <attribute name="Main-Class" value="Starter"/>
@@ -75,13 +75,12 @@
   <!-- Defualt target to run all targets-->
   <target name="app" depends="jar,javadoc">
     <description>Main target</description>
-	  <java jar="./dest/ija-app.jar" fork="true"/>
-	  
+	  <chmod file="./dest/ija-app.jar" perm="+x"/>
   </target>
   
   <!-- Target to make the jar file and clean .class files -->
   <target name="app-rm" depends="jar, clean">
-	  <java jar="./dest/app.jar" fork="true"/>
+	  <java jar="./dest/ija-app.jar" fork="true"/>
   </target>
  
 </project>

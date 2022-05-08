@@ -46,6 +46,7 @@ import javafx.geometry.Pos;
 
 /**
  * Creates pop up window for selecting class
+ * @author xlukac16
  */
 public class CPopper implements EventHandler<ActionEvent>{
 

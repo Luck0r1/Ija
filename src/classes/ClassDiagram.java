@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * Stores information about whole class diagram
+ * @author xmacej03
  */
 public class ClassDiagram{
 

@@ -4,6 +4,7 @@ import support.AccesT;
 import java.util.*;
 /**
  * Stores information of single element
+ * @author xlukac16
  */
 public class CD_Element{
 

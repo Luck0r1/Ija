@@ -33,6 +33,7 @@ import classes.ClassDiagram;
  * Class used for handling files. Has functions that load, save and create Class diagrams.
  * These diagrams are saved in .xml format and are readable only by this application.
  * Dom parser is used for parsing and creating xml files.
+ * @author xlukac16
  */
 public class FileHandler{
     

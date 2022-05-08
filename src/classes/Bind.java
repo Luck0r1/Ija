@@ -7,6 +7,7 @@ import classes.Class;
 
 /**
  * Class that carries information about single relation in class diagram
+ * @author xlukac16
  */
 public class Bind{
 

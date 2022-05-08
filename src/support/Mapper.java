@@ -15,6 +15,7 @@ import classes.Class;
 /**
  * Class responsible for editing the layer under the visible parts.
  * This map is form of two dimensional array, and helps with layout of elements 
+ * @author xlukac16
  */
 public class Mapper{
 
@@ -145,21 +146,22 @@ public class Mapper{
         if(bgnX<=0 || bgnY<=0)return false;
         for(int i=startX; i< endX;i++){
             for(int j=startY;j<endY;j++){
-                int x;
+                int x=1;
                 try {
                     x=this.GetVal(i, j);
                 } catch (Exception e) {
                     return false;
                 }
-                if(x!=0)
+                if(x!=0){
                     return false;
+                }
             }
         }
         return true;
     }
 
     /**
-     * Finds closest place to place a class
+     * Finds closest place to place a class*
      * @param c
      * @param newX
      * @param newY
@@ -170,10 +172,8 @@ public class Mapper{
         Dimension h = new Dimension(-1,-1);
         int tarPosX = Converts.ToMapCoordinatesX(newX);
         int tarPosY = Converts.ToMapCoordinatesY(newY);
-        if(c.GetPosX()!=0)
-            this.UnfilSpaceForClass(c);
 
-        if(this.IsEmpty(tarPosX, tarPosY, c.GetGraphicWidth()/5, c.GetGraphicHeigth()/5)){
+        if(this.IsEmpty(tarPosX, tarPosY,  c.GetGraphicWidth()/5, c.GetGraphicHeigth()/5)){
             h.setSize(tarPosX, tarPosY);
             return h;
         }
@@ -202,19 +202,19 @@ public class Mapper{
 
             for (int i = 1; i < d; i++)
             {
-                int x1 = tarPosX - i;
-                int y1 = tarPosY + d - i;
+                int x3 = tarPosX - i;
+                int y3 = tarPosY + d - i;
 
-                if(this.IsEmpty(x1, y1, c.GetGraphicWidth()/5, c.GetGraphicHeigth()/5)){
-                    h.setSize(x1, y1);
+                if(this.IsEmpty(x3, y3, c.GetGraphicWidth()/5, c.GetGraphicHeigth()/5)){
+                    h.setSize(x3, y3);
                     return h;
                 }
 
-                int x2 = tarPosX + i;
-                int y2 = tarPosY - d + i;
+                int x4 = tarPosX + i;
+                int y4 = tarPosY - d + i;
 
-                if(this.IsEmpty(x2, y2, c.GetGraphicWidth()/5, c.GetGraphicHeigth()/5)){
-                    h.setSize(x2, y2);
+                if(this.IsEmpty(x4, y4, c.GetGraphicWidth()/5, c.GetGraphicHeigth()/5)){
+                    h.setSize(x4, y4);
                     return h;
                 }
             }

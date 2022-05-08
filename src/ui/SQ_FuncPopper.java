@@ -42,6 +42,7 @@ import javafx.scene.layout.Pane;
 
 /**
  * Creates pop up window for adding to sequence diagram
+ * @author xlukac16
  */
 public class SQ_FuncPopper implements EventHandler<ActionEvent>{
 

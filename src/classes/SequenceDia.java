@@ -8,6 +8,7 @@ import classes.*;
 
 /**
  * This class has all information about single sequence diagram
+ * @author xmacej03
  */
 public class SequenceDia{
     private String name;
@@ -229,7 +230,6 @@ public class SequenceDia{
      * Repairs diagram after deletion
      */
     public void RepairDia(){
-        System.out.println(this.loveLetters.get(this.loveLetters.size()-1));
         List<Actor> toRemove = new ArrayList<Actor>();
         for(Actor a : this.GetCast()){
             if(a.IsEternal() )continue;

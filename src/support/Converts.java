@@ -3,6 +3,7 @@ package support;
 
 /**
  * This class houses map support functions, this has to do with coordinates
+ * @author xlukac16
  */
 public class Converts{
     /**

@@ -44,7 +44,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.Group; 
 
 /**
- * Class that handles loaded sequence diagram. Such classes were planned also for file handeling and class diagram handling 
+ * Class that handles loaded sequence diagram. Such classes were planned also for file handeling and class diagram handling
+ * @author xmacej03 
  */
 public class SequenceDiaInterface implements EventHandler<ActionEvent>{
     private SequenceDia sq;

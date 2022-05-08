@@ -38,6 +38,7 @@ import javafx.geometry.Pos;
 
 /**
  * Creates pop up window for renaming classes
+ * @author xmacej03
  */
 public class vPopper implements EventHandler<ActionEvent>{
 

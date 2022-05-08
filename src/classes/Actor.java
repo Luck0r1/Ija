@@ -2,6 +2,7 @@
 package classes;
 /**
  * This class handles single instance in sequence diagram
+ * @author xmacej03
  */
 public class Actor{
 

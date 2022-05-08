@@ -56,7 +56,7 @@ import java.io.File;
 /**
  * Main class is the main class of program that is made and called directly from FireStareter class, where main is located
  * This function also refreshes main screen, and is alsom responsible for load menu functions. (This was not moved because of time constraints).
- * 
+ * @author Tomas Lukac xlukac16, Lukas Macejka xmacej03
  */
 public class MainC extends Application implements EventHandler<ActionEvent>{
 
@@ -66,7 +66,7 @@ public class MainC extends Application implements EventHandler<ActionEvent>{
     private Line drawer;
 
     private Stage primaryStage;
-    private String pathway="./data";
+    private String pathway="./../data";
 
     private Group drawerG;
 

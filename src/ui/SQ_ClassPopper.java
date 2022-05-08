@@ -29,6 +29,7 @@ import classes.Actor;
 
 /**
  * Creates pop up window for creating class
+ * @author xmacej03
  */
 public class SQ_ClassPopper implements EventHandler<ActionEvent>{
 

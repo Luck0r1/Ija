@@ -26,6 +26,7 @@ import support.Delta;
 
 /**
  * This class handles inner setting of class diagram
+ * @author xlukac16
  */
 public class ClassController implements EventHandler<ActionEvent>{
 
